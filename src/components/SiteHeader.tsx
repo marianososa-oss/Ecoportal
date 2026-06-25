@@ -21,6 +21,7 @@ export function SiteHeader() {
           <NavLink href="/">Inicio</NavLink>
           <NavLink href="/dashboard">Mi tablero</NavLink>
           <NavLink href="/perfil">Mi perfil</NavLink>
+          <NavLink href="/firma">Mi firma</NavLink>
           <ThemeToggle className="ml-1" />
         </nav>
       </div>

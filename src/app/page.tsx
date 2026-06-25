@@ -38,10 +38,11 @@ export default function Home() {
               destacado
             />
             <FeatureCard
+              href="/firma"
               icon={<PenLine />}
               titulo="Firma de mail"
               desc="Generá tu firma corporativa lista para pegar en Gmail."
-              cta="Muy pronto"
+              cta="Crear mi firma"
             />
             <FeatureCard
               icon={<Compass />}
