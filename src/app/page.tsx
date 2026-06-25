@@ -50,10 +50,11 @@ export default function Home() {
               cta="Muy pronto"
             />
             <FeatureCard
+              href="/dashboard"
               icon={<CalendarDays />}
-              titulo="Mi agenda"
-              desc="Tu Google Calendar, tareas del día y eventos de tu área en un solo lugar."
-              cta="Muy pronto"
+              titulo="Mi tablero"
+              desc="Tu agenda, tareas del día, equipo y eventos de tu área en un solo lugar."
+              cta="Ver mi tablero"
             />
           </div>
         </section>

@@ -19,6 +19,7 @@ export function SiteHeader() {
 
         <nav className="flex items-center gap-1">
           <NavLink href="/">Inicio</NavLink>
+          <NavLink href="/dashboard">Mi tablero</NavLink>
           <NavLink href="/perfil">Mi perfil</NavLink>
           <ThemeToggle className="ml-1" />
         </nav>
