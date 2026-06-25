@@ -40,7 +40,7 @@ export function TaskTracker({ tareas }: { tareas: Tarea[] }) {
   });
 
   return (
-    <section className="rounded-2xl border border-line bg-card p-5 shadow-card">
+    <section className="rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:shadow-lift">
       <div className="flex items-center justify-between">
         <h2 className="font-bold text-heading">Tareas</h2>
         <button className="text-xs font-semibold text-brand hover:text-brand-light">

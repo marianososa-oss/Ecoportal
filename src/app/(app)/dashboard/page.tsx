@@ -10,9 +10,8 @@ import {
   CalendarClock,
   Users,
 } from "lucide-react";
-import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
 import { TaskTracker, type Tarea } from "@/components/dashboard/TaskTracker";
+import { ProgressRing, ProgressBar } from "@/components/dashboard/Progress";
 
 export const metadata = { title: "Mi tablero" };
 
@@ -76,84 +75,101 @@ export default function DashboardPage() {
   const fechaLarga = `${now.getDate()} de ${MESES[now.getMonth()]} de ${now.getFullYear()}`;
 
   return (
-    <>
-      <SiteHeader />
-      <main className="flex-1">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-          {/* Topbar */}
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="animate-rise">
-              <h1 className="text-2xl font-extrabold tracking-tight text-heading sm:text-3xl">
-                ¡Hola, {USUARIO.nombre}! 👋
-              </h1>
-              <p className="mt-0.5 text-sm text-muted">{fechaLarga}</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="relative hidden sm:block">
-                <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-                <input
-                  placeholder="Buscar…"
-                  className="w-56 rounded-full border border-line bg-card py-2 pl-9 pr-4 text-sm outline-none ring-brand/30 focus:ring-2"
-                />
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      {/* Topbar */}
+      <div className="flex flex-col gap-4 animate-rise sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight text-heading sm:text-3xl">
+            ¡Hola, {USUARIO.nombre}! 👋
+          </h1>
+          <p className="mt-0.5 text-sm text-muted">{fechaLarga}</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="relative hidden sm:block">
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+            <input
+              placeholder="Buscar…"
+              className="w-56 rounded-full border border-line bg-card py-2 pl-9 pr-4 text-sm outline-none ring-brand/30 transition focus:w-64 focus:ring-2"
+            />
+          </div>
+          <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-line bg-card text-brand transition hover:bg-surface">
+            <Bell size={17} />
+            <span className="absolute right-2 top-2 h-2 w-2 animate-pulse rounded-full bg-brand-accent" />
+          </button>
+        </div>
+      </div>
+
+      {/* Grilla principal */}
+      <div className="mt-6 grid gap-5 lg:grid-cols-3">
+        {/* Columna izquierda (2/3) */}
+        <div className="space-y-5 lg:col-span-2">
+          {/* Perfil + stats + actividad */}
+          <div className="grid gap-5 md:grid-cols-5">
+            <Reveal delay={40} className="md:col-span-2">
+              <ProfileCard />
+            </Reveal>
+            <div className="space-y-5 md:col-span-3">
+              <div className="grid grid-cols-2 gap-5">
+                <Reveal delay={90}>
+                  <StatCard icon={<Video size={16} />} titulo="Reuniones" valor="2/3" pct={66} />
+                </Reveal>
+                <Reveal delay={140}>
+                  <StatCard icon={<CheckCircle2 size={16} />} titulo="Tareas completas" valor="3/10" pct={32} />
+                </Reveal>
               </div>
-              <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-line bg-card text-brand">
-                <Bell size={17} />
-                <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-brand-accent" />
-              </button>
+              <Reveal delay={190}>
+                <ActivityChart />
+              </Reveal>
             </div>
           </div>
 
-          {/* Grilla principal */}
-          <div className="mt-6 grid gap-5 lg:grid-cols-3">
-            {/* Columna izquierda (2/3) */}
-            <div className="space-y-5 lg:col-span-2">
-              {/* Perfil + stats + actividad */}
-              <div className="grid gap-5 md:grid-cols-5">
-                <ProfileCard />
-                <div className="space-y-5 md:col-span-3">
-                  <div className="grid grid-cols-2 gap-5">
-                    <StatCard icon={<Video size={16} />} titulo="Reuniones" valor="2/3" pct={66} />
-                    <StatCard icon={<CheckCircle2 size={16} />} titulo="Tareas completas" valor="3/10" pct={32} />
-                  </div>
-                  <ActivityChart />
-                </div>
-              </div>
+          {/* Equipo + Cursos */}
+          <div className="grid gap-5 md:grid-cols-2">
+            <Reveal delay={240}><TeamCard /></Reveal>
+            <Reveal delay={290}><CoursesCard /></Reveal>
+          </div>
 
-              {/* Equipo + Cursos */}
-              <div className="grid gap-5 md:grid-cols-2">
-                <TeamCard />
-                <CoursesCard />
-              </div>
-
-              {/* Calendario + Documentos */}
-              <div className="grid gap-5 md:grid-cols-2">
-                <CalendarCard now={now} />
-                <DocumentsCard />
-              </div>
-            </div>
-
-            {/* Columna derecha (1/3) */}
-            <div className="space-y-5">
-              <TaskTracker tareas={TAREAS} />
-              <UpcomingEvents />
-              <GoalsCard />
-            </div>
+          {/* Calendario + Documentos */}
+          <div className="grid gap-5 md:grid-cols-2">
+            <Reveal delay={340}><CalendarCard now={now} /></Reveal>
+            <Reveal delay={390}><DocumentsCard /></Reveal>
           </div>
         </div>
-      </main>
-      <SiteFooter />
-    </>
+
+        {/* Columna derecha (1/3) */}
+        <div className="space-y-5">
+          <Reveal delay={120}><TaskTracker tareas={TAREAS} /></Reveal>
+          <Reveal delay={220}><UpcomingEvents /></Reveal>
+          <Reveal delay={320}><GoalsCard /></Reveal>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Envoltorio de entrada escalonada (respeta prefers-reduced-motion vía CSS). */
+function Reveal({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  return (
+    <div className={`animate-rise ${className}`} style={{ animationDelay: `${delay}ms` }}>
+      {children}
+    </div>
   );
 }
 
 /* ── Componentes ─────────────────────────────────────────────────────────── */
 
 function ProfileCard() {
-  const r = 26;
-  const c = 2 * Math.PI * r;
-  const dash = (USUARIO.perfil / 100) * c;
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-navy-2 p-5 text-white shadow-card md:col-span-2">
+    <div className="group relative h-full overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-navy-2 p-5 text-white shadow-card transition-all duration-300 hover:shadow-lift">
+      <span className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10 blur-2xl transition-transform duration-500 group-hover:scale-125" />
       <div className="flex items-center justify-center">
         <div className="flex h-24 w-24 items-center justify-center rounded-2xl bg-white/15 text-3xl font-extrabold backdrop-blur-sm">
           {iniciales(`${USUARIO.nombre} ${USUARIO.apellido}`)}
@@ -166,11 +182,7 @@ function ProfileCard() {
         <p className="text-sm text-white/75">{USUARIO.puesto}</p>
       </div>
       <div className="mt-4 flex items-center justify-center gap-3">
-        <svg width="64" height="64" viewBox="0 0 64 64" className="-rotate-90">
-          <circle cx="32" cy="32" r={r} fill="none" stroke="rgba(255,255,255,.25)" strokeWidth="6" />
-          <circle cx="32" cy="32" r={r} fill="none" stroke="var(--brand-accent)" strokeWidth="6"
-            strokeLinecap="round" strokeDasharray={`${dash} ${c}`} />
-        </svg>
+        <ProgressRing pct={USUARIO.perfil} />
         <div>
           <p className="text-2xl font-extrabold leading-none">{USUARIO.perfil}%</p>
           <p className="text-xs text-white/70">perfil completo</p>
@@ -185,16 +197,14 @@ function ProfileCard() {
 
 function StatCard({ icon, titulo, valor, pct }: { icon: React.ReactNode; titulo: string; valor: string; pct: number }) {
   return (
-    <div className="rounded-2xl border border-line bg-card p-4 shadow-card">
+    <div className="rounded-2xl border border-line bg-card p-4 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
       <div className="flex items-center gap-2 text-muted">
         <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface text-brand">{icon}</span>
         <span className="text-xs font-semibold">{titulo}</span>
       </div>
       <p className="mt-3 text-2xl font-extrabold text-heading">{valor}</p>
       <div className="mt-2 flex items-center gap-2">
-        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface">
-          <div className="h-full rounded-full bg-brand-accent" style={{ width: `${pct}%` }} />
-        </div>
+        <ProgressBar pct={pct} className="flex-1" />
         <span className="text-xs font-bold text-brand-accent-dark">{pct}%</span>
       </div>
     </div>
@@ -203,7 +213,7 @@ function StatCard({ icon, titulo, valor, pct }: { icon: React.ReactNode; titulo:
 
 function ActivityChart() {
   return (
-    <div className="rounded-2xl border border-line bg-card p-5 shadow-card">
+    <div className="rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
       <div className="flex items-baseline justify-between">
         <div>
           <p className="text-sm font-semibold text-muted">Tu actividad</p>
@@ -235,7 +245,7 @@ function ActivityChart() {
 
 function TeamCard() {
   return (
-    <div className="rounded-2xl border border-line bg-card p-5 shadow-card">
+    <div className="rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
       <CardHead icon={<Users size={15} />} titulo="Tu equipo" />
       <div className="mt-4 grid grid-cols-4 gap-2">
         {EQUIPO.map((m, i) => (
@@ -254,7 +264,7 @@ function TeamCard() {
 
 function CoursesCard() {
   return (
-    <div className="rounded-2xl border border-line bg-card p-5 shadow-card">
+    <div className="rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
       <CardHead icon={<GraduationCap size={15} />} titulo="Cursos y webinars" />
       <ul className="mt-4 space-y-2">
         {CURSOS.map((c) => (
@@ -272,7 +282,7 @@ function CoursesCard() {
 
 function DocumentsCard() {
   return (
-    <div className="rounded-2xl border border-line bg-card p-5 shadow-card">
+    <div className="rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
       <CardHead icon={<FileText size={15} />} titulo="Documentos" />
       <ul className="mt-4 space-y-2">
         {DOCUMENTOS.map((d) => (
@@ -300,7 +310,7 @@ function CalendarCard({ now }: { now: Date }) {
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ];
   return (
-    <div className="rounded-2xl border border-line bg-card p-5 shadow-card">
+    <div className="rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
       <CardHead icon={<CalendarClock size={15} />} titulo={`${MESES[month][0].toUpperCase()}${MESES[month].slice(1)} ${year}`} />
       <div className="mt-4 grid grid-cols-7 gap-1 text-center">
         {DOW.map((d) => (
@@ -332,7 +342,7 @@ const EVENT_ICON = {
 
 function UpcomingEvents() {
   return (
-    <section className="rounded-2xl border border-line bg-card p-5 shadow-card">
+    <section className="rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
       <CardHead icon={<CalendarClock size={15} />} titulo="Lo que se viene en tu área" />
       <ul className="mt-4 space-y-2">
         {EVENTOS.map((e) => (
@@ -353,7 +363,7 @@ function UpcomingEvents() {
 
 function GoalsCard() {
   return (
-    <section className="rounded-2xl border border-line bg-card p-5 shadow-card">
+    <section className="rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
       <h2 className="font-bold text-heading">Tus objetivos</h2>
       <p className="mt-1 text-xs text-muted">
         Pensados para acompañar tus primeras 2 semanas.
@@ -365,9 +375,7 @@ function GoalsCard() {
               <span className="font-semibold text-ink">{o.titulo}</span>
               <span className="text-xs font-bold text-brand-accent-dark">{o.pct}%</span>
             </div>
-            <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-surface">
-              <div className="h-full rounded-full bg-brand-accent" style={{ width: `${o.pct}%` }} />
-            </div>
+            <ProgressBar pct={o.pct} height="h-2" className="mt-1.5" />
           </li>
         ))}
       </ul>
