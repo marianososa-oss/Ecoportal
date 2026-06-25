@@ -6,6 +6,7 @@ import {
   LayoutGrid,
   ArrowRight,
 } from "lucide-react";
+import { PageHero } from "@/components/shell/PageHero";
 
 const FEATURES = [
   {
@@ -41,27 +42,21 @@ const FEATURES = [
 
 export default function Home() {
   return (
-    <div className="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
-      <header className="max-w-3xl animate-rise">
-        <span className="inline-flex items-center gap-2 rounded-full border border-line bg-card px-3 py-1 text-xs font-semibold text-brand shadow-card">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-accent" />
-          Bienvenida/o a Ecocontrol
-        </span>
-        <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-heading text-balance sm:text-5xl">
-          Tu portal personal del equipo
-        </h1>
-        <p className="mt-3 text-lg text-muted text-pretty">
-          Dejá tu perfil listo en minutos y, muy pronto, vas a tener acá tu
-          agenda, tus tareas y todo lo que se viene en tu área.
-        </p>
-      </header>
-
-      <div className="mt-10 grid gap-5 sm:grid-cols-2">
-        {FEATURES.map((f, i) => (
-          <FeatureCard key={f.titulo} {...f} delay={i * 70} />
-        ))}
+    <>
+      <PageHero
+        size="lg"
+        eyebrow="Bienvenida/o a Ecocontrol"
+        title="Tu portal personal del equipo"
+        subtitle="Dejá tu perfil listo en minutos y, muy pronto, vas a tener acá tu agenda, tus tareas y todo lo que se viene en tu área."
+      />
+      <div className="mx-auto max-w-6xl px-5 py-12 sm:px-8">
+        <div className="grid gap-5 sm:grid-cols-2">
+          {FEATURES.map((f, i) => (
+            <FeatureCard key={f.titulo} {...f} delay={i * 70} />
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

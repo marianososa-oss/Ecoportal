@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Copy, Check, Mail } from "lucide-react";
+import { usePerfilLocal } from "@/lib/perfil-local";
 
 /* Base pública para las imágenes (deben ser URLs absolutas para que carguen
    dentro del mail). Si más adelante hay dominio propio, se cambia acá. */
@@ -57,6 +58,20 @@ export function SignatureGenerator() {
   const [d, setD] = useState<Datos>({ nombre: "", area: "", email: "", cel: "" });
   const [copied, setCopied] = useState<"html" | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+
+  // Prefill desde el perfil guardado (si ya lo cargaste en el tablero).
+  const [perfil, , listoPerfil] = usePerfilLocal();
+  const seeded = useRef(false);
+  useEffect(() => {
+    if (!listoPerfil || seeded.current) return;
+    seeded.current = true;
+    const full = `${perfil.nombre} ${perfil.apellido}`.trim();
+    setD((p) => ({
+      ...p,
+      nombre: full || p.nombre,
+      area: perfil.area.trim() || p.area,
+    }));
+  }, [listoPerfil, perfil]);
 
   const html = useMemo(() => buildSignature(d), [d]);
 

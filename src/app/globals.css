@@ -126,6 +126,10 @@ body {
   background-image: radial-gradient(var(--dot) 1.2px, transparent 1.2px);
   background-size: 22px 22px;
 }
+.bg-dots-hero {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+}
 
 /* ── Animaciones ─────────────────────────────────────────────────────────── */
 @keyframes eco-rise {
@@ -155,9 +159,41 @@ body {
   animation: eco-float 5s ease-in-out infinite;
 }
 
+/* Mesh / aurora del hero: glows que derivan lento (igual que econoticias) */
+@keyframes eco-aurora {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(6%, -4%, 0) scale(1.18);
+    opacity: 0.8;
+  }
+}
+@keyframes eco-aurora-2 {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.12);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate3d(-7%, 5%, 0) scale(1);
+    opacity: 0.75;
+  }
+}
+.animate-aurora {
+  animation: eco-aurora 20s ease-in-out infinite;
+}
+.animate-aurora-2 {
+  animation: eco-aurora-2 26s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-rise,
-  .animate-float {
+  .animate-float,
+  .animate-aurora,
+  .animate-aurora-2 {
     animation: none;
   }
   html {

@@ -11,12 +11,13 @@ import {
   Users,
 } from "lucide-react";
 import { TaskTracker, type Tarea } from "@/components/dashboard/TaskTracker";
-import { ProgressRing, ProgressBar } from "@/components/dashboard/Progress";
+import { ProgressBar } from "@/components/dashboard/Progress";
+import { IdentityCard } from "@/components/dashboard/IdentityCard";
+import { Greeting } from "@/components/dashboard/Greeting";
 
 export const metadata = { title: "Mi tablero" };
 
 /* ── Datos de muestra (luego salen de la base + Google Calendar) ─────────── */
-const USUARIO = { nombre: "Daniela", apellido: "Gómez", puesto: "Marketing", perfil: 95 };
 
 const EQUIPO = [
   { nombre: "Lucía Green", rol: "Líder de equipo" },
@@ -75,38 +76,17 @@ export default function DashboardPage() {
   const fechaLarga = `${now.getDate()} de ${MESES[now.getMonth()]} de ${now.getFullYear()}`;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Topbar */}
-      <div className="flex flex-col gap-4 animate-rise sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-heading sm:text-3xl">
-            ¡Hola, {USUARIO.nombre}! 👋
-          </h1>
-          <p className="mt-0.5 text-sm text-muted">{fechaLarga}</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="relative hidden sm:block">
-            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-            <input
-              placeholder="Buscar…"
-              className="w-56 rounded-full border border-line bg-card py-2 pl-9 pr-4 text-sm outline-none ring-brand/30 transition focus:w-64 focus:ring-2"
-            />
-          </div>
-          <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-line bg-card text-brand transition hover:bg-surface">
-            <Bell size={17} />
-            <span className="absolute right-2 top-2 h-2 w-2 animate-pulse rounded-full bg-brand-accent" />
-          </button>
-        </div>
-      </div>
-
+    <>
+      <DashHero fecha={fechaLarga} />
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Grilla principal */}
-      <div className="mt-6 grid gap-5 lg:grid-cols-3">
+      <div className="grid gap-5 lg:grid-cols-3">
         {/* Columna izquierda (2/3) */}
         <div className="space-y-5 lg:col-span-2">
           {/* Perfil + stats + actividad */}
           <div className="grid gap-5 md:grid-cols-5">
             <Reveal delay={40} className="md:col-span-2">
-              <ProfileCard />
+              <IdentityCard />
             </Reveal>
             <div className="space-y-5 md:col-span-3">
               <div className="grid grid-cols-2 gap-5">
@@ -143,7 +123,8 @@ export default function DashboardPage() {
           <Reveal delay={320}><GoalsCard /></Reveal>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -166,32 +147,39 @@ function Reveal({
 
 /* ── Componentes ─────────────────────────────────────────────────────────── */
 
-function ProfileCard() {
+function DashHero({ fecha }: { fecha: string }) {
   return (
-    <div className="group relative h-full overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-navy-2 p-5 text-white shadow-card transition-all duration-300 hover:shadow-lift">
-      <span className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10 blur-2xl transition-transform duration-500 group-hover:scale-125" />
-      <div className="flex items-center justify-center">
-        <div className="flex h-24 w-24 items-center justify-center rounded-2xl bg-white/15 text-3xl font-extrabold backdrop-blur-sm">
-          {iniciales(`${USUARIO.nombre} ${USUARIO.apellido}`)}
+    <section className="relative isolate overflow-hidden bg-navy">
+      <div className="absolute inset-0 bg-gradient-to-br from-navy/96 via-navy-2/90 to-navy/96" />
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div
+          className="animate-aurora absolute -left-32 -top-40 h-[34rem] w-[34rem] rounded-full blur-[110px]"
+          style={{ background: "radial-gradient(circle, var(--brand-light), transparent 65%)" }}
+        />
+        <div
+          className="animate-aurora-2 absolute -right-40 -top-10 h-[28rem] w-[28rem] rounded-full blur-[120px]"
+          style={{ background: "radial-gradient(circle, var(--brand-accent), transparent 65%)" }}
+        />
+      </div>
+      <div className="bg-dots-hero absolute inset-0 opacity-60" />
+
+      <div className="relative mx-auto flex max-w-7xl flex-col gap-4 px-4 py-9 animate-rise sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+        <Greeting fecha={fecha} />
+        <div className="flex items-center gap-3">
+          <div className="relative hidden sm:block">
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/60" />
+            <input
+              placeholder="Buscar…"
+              className="w-56 rounded-full border border-white/15 bg-white/10 py-2 pl-9 pr-4 text-sm text-white outline-none ring-white/20 backdrop-blur transition placeholder:text-white/55 focus:w-64 focus:ring-2"
+            />
+          </div>
+          <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white backdrop-blur transition hover:bg-white/20">
+            <Bell size={17} />
+            <span className="absolute right-2 top-2 h-2 w-2 animate-pulse rounded-full bg-brand-accent" />
+          </button>
         </div>
       </div>
-      <div className="mt-4 text-center">
-        <p className="text-lg font-bold leading-tight">
-          {USUARIO.nombre} {USUARIO.apellido}
-        </p>
-        <p className="text-sm text-white/75">{USUARIO.puesto}</p>
-      </div>
-      <div className="mt-4 flex items-center justify-center gap-3">
-        <ProgressRing pct={USUARIO.perfil} />
-        <div>
-          <p className="text-2xl font-extrabold leading-none">{USUARIO.perfil}%</p>
-          <p className="text-xs text-white/70">perfil completo</p>
-        </div>
-      </div>
-      <button className="mt-4 w-full rounded-xl bg-white/15 py-2.5 text-xs font-semibold backdrop-blur-sm transition hover:bg-white/25">
-        + Completá tu perfil
-      </button>
-    </div>
+    </section>
   );
 }
 
