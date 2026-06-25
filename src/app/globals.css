@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Tokens de color (claro = :root, oscuro = .dark) ─────────────────────── */
+:root {
+  --bg: #ffffff;
+  --surface: #eef3f9;
+  --card: #ffffff;
+  --ink: #16314f;
+  --heading: #00478f;
+  --muted: #5a6b80;
+  --line: #dce5f0;
+
+  --brand: #00478f;
+  --brand-light: #1768c4;
+  --brand-dark: #003366;
+  --brand-accent: #4f7735;
+  --brand-accent-dark: #3c5b28;
+
+  --navy: #042747;
+  --navy-2: #073461;
+
+  --dot: rgba(0, 71, 143, 0.14);
+
+  --shadow-card: 0 1px 2px rgba(8, 26, 48, 0.05), 0 10px 30px -16px rgba(8, 26, 48, 0.22);
+  --shadow-lift: 0 22px 48px -22px rgba(8, 26, 48, 0.4);
+
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #07182d;
+  --surface: #0d2440;
+  --card: #112c4d;
+  --ink: #dbe7f6;
+  --heading: #ffffff;
+  --muted: #93a6bd;
+  --line: #214064;
+
+  --brand: #4f99ee;
+  --brand-light: #74b1f5;
+  --brand-dark: #0c2a52;
+  --brand-accent: #8cbf52;
+  --brand-accent-dark: #79c24d;
+
+  --navy: #050f1f;
+  --navy-2: #0a2348;
+
+  --dot: rgba(120, 170, 230, 0.12);
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px -16px rgba(0, 0, 0, 0.55);
+  --shadow-lift: 0 24px 50px -22px rgba(0, 0, 0, 0.7);
+
+  color-scheme: dark;
+}
+
+/* El login / vistas que deben verse siempre en claro. */
+.force-light {
+  --bg: #ffffff;
+  --surface: #eef3f9;
+  --card: #ffffff;
+  --ink: #16314f;
+  --heading: #00478f;
+  --muted: #5a6b80;
+  --line: #dce5f0;
+  --brand: #00478f;
+  --brand-light: #1768c4;
+  --brand-dark: #003366;
+  --brand-accent: #4f7735;
+  --brand-accent-dark: #3c5b28;
+  color-scheme: light;
+  color: var(--ink);
+  background: var(--bg);
+}
+.force-light input,
+.force-light textarea,
+.force-light select {
+  color: var(--ink);
+}
+
+/* ── Mapeo a utilidades de Tailwind ──────────────────────────────────────── */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-heading: var(--heading);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+
+  --color-brand: var(--brand);
+  --color-brand-light: var(--brand-light);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-dark: var(--brand-accent-dark);
+
+  --color-navy: var(--navy);
+  --color-navy-2: var(--navy-2);
+
+  --font-sans: var(--font-jost), system-ui, sans-serif;
+
+  --shadow-card: var(--shadow-card);
+  --shadow-lift: var(--shadow-lift);
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--dot) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+body {
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  transition: color 0.3s ease;
+}
+
+/* ── Grilla de puntos tipo blueprint ─────────────────────────────────────── */
+.bg-dots {
+  background-image: radial-gradient(var(--dot) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+/* ── Animaciones ─────────────────────────────────────────────────────────── */
+@keyframes eco-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-rise {
+  animation: eco-rise 0.7s var(--ease-out-quint) both;
+}
+
+@keyframes eco-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(6deg);
+  }
+}
+.animate-float {
+  animation: eco-float 5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise,
+  .animate-float {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 999px;
+}
