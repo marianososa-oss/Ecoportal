@@ -8,6 +8,11 @@ export default defineConfig({
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? process.env.POSTGRES_URL ?? "",
+    // La unpooled (directa) va mejor para migraciones/push.
+    url:
+      process.env.DATABASE_URL_UNPOOLED ??
+      process.env.DATABASE_URL ??
+      process.env.POSTGRES_URL ??
+      "",
   },
 });

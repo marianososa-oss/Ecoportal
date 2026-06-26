@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Download, RefreshCw } from "lucide-react";
-import { usePerfilLocal } from "@/lib/perfil-local";
 
 /* La plantilla es 800×800. Estas constantes ubican el texto dentro del panel
    celeste del medio. Son fáciles de ajustar si hace falta correr algo. */
@@ -51,23 +50,18 @@ function fitFont(
   return size;
 }
 
-export function ProfileImageGenerator() {
+export function ProfileImageGenerator({
+  initialNombre = "",
+  initialArea = "",
+}: {
+  initialNombre?: string;
+  initialArea?: string;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
   const [ready, setReady] = useState(false);
-  const [nombre, setNombre] = useState("");
-  const [area, setArea] = useState("");
-
-  // Prefill desde el perfil guardado (si ya lo cargaste en el tablero).
-  const [perfil, , listoPerfil] = usePerfilLocal();
-  const seeded = useRef(false);
-  useEffect(() => {
-    if (!listoPerfil || seeded.current) return;
-    seeded.current = true;
-    const full = `${perfil.nombre} ${perfil.apellido}`.trim();
-    if (full) setNombre(full);
-    if (perfil.area.trim()) setArea(perfil.area);
-  }, [listoPerfil, perfil]);
+  const [nombre, setNombre] = useState(initialNombre);
+  const [area, setArea] = useState(initialArea);
 
   // Carga la plantilla y las fuentes una sola vez.
   useEffect(() => {

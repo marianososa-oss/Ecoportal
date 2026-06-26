@@ -3,16 +3,14 @@
 import { CheckCircle2, UserCircle } from "lucide-react";
 import { ProgressBar } from "./Progress";
 import { useTareas } from "@/lib/tablero-local";
-import { usePerfilLocal, completitud } from "@/lib/perfil-local";
 
-export function LiveStats() {
+export function LiveStats({ perfilPct }: { perfilPct: number }) {
   const { tareas } = useTareas();
-  const [perfil] = usePerfilLocal();
 
   const total = tareas.length;
   const completas = tareas.filter((t) => t.estado === "completa").length;
   const pctTareas = total ? Math.round((completas / total) * 100) : 0;
-  const pctPerfil = completitud(perfil);
+  const pctPerfil = perfilPct;
 
   return (
     <div className="grid grid-cols-2 gap-5">

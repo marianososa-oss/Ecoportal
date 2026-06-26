@@ -1,46 +1,44 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Pencil, User, X, Check } from "lucide-react";
 import { ProgressRing } from "./Progress";
-import { usePerfilLocal, completitud, type PerfilLocal } from "@/lib/perfil-local";
+import { updateProfileAction } from "@/lib/actions/perfil";
+import type { Identidad } from "@/lib/identidad";
 
-function iniciales(p: PerfilLocal) {
-  const n = (p.nombre[0] ?? "") + (p.apellido[0] ?? "");
-  return n.toUpperCase();
+function iniciales(nombre: string) {
+  return nombre.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
 }
 
-export function IdentityCard() {
-  const [perfil, guardar, listo] = usePerfilLocal();
+export function IdentityCard({ user }: { user: Identidad }) {
   const [open, setOpen] = useState(false);
-
-  const pct = completitud(perfil);
-  const tieneNombre = perfil.nombre.trim() || perfil.apellido.trim();
-  const nombreCompleto = `${perfil.nombre} ${perfil.apellido}`.trim();
+  const tieneNombre = !!(user.firstName.trim() || user.lastName.trim());
 
   return (
     <div className="group relative h-full overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-navy-2 p-5 text-white shadow-card transition-all duration-300 hover:shadow-lift">
       <span className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10 blur-2xl transition-transform duration-500 group-hover:scale-125" />
 
       <div className="flex items-center justify-center">
-        <div className="flex h-24 w-24 items-center justify-center rounded-2xl bg-white/15 text-3xl font-extrabold backdrop-blur-sm">
-          {tieneNombre ? iniciales(perfil) : <User size={36} className="text-white/70" />}
-        </div>
+        {user.avatarUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={user.avatarUrl} alt="" className="h-24 w-24 rounded-2xl object-cover" />
+        ) : (
+          <div className="flex h-24 w-24 items-center justify-center rounded-2xl bg-white/15 text-3xl font-extrabold backdrop-blur-sm">
+            {tieneNombre ? iniciales(user.nombre) : <User size={36} className="text-white/70" />}
+          </div>
+        )}
       </div>
 
       <div className="mt-4 text-center">
-        <p className="text-lg font-bold leading-tight">
-          {listo && tieneNombre ? nombreCompleto : "Tu nombre"}
-        </p>
-        <p className="text-sm text-white/75">
-          {listo && perfil.area.trim() ? perfil.area : "Tu área"}
-        </p>
+        <p className="text-lg font-bold leading-tight">{user.nombre}</p>
+        <p className="text-sm text-white/75">{user.area.trim() || "Cargá tu área"}</p>
       </div>
 
       <div className="mt-4 flex items-center justify-center gap-3">
-        <ProgressRing pct={pct} />
+        <ProgressRing pct={user.pct} />
         <div>
-          <p className="text-2xl font-extrabold leading-none">{pct}%</p>
+          <p className="text-2xl font-extrabold leading-none">{user.pct}%</p>
           <p className="text-xs text-white/70">perfil completo</p>
         </div>
       </div>
@@ -51,33 +49,22 @@ export function IdentityCard() {
         className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-white/15 py-2.5 text-xs font-semibold backdrop-blur-sm transition hover:bg-white/25"
       >
         <Pencil size={13} />
-        {tieneNombre ? "Editar mi perfil" : "Completá tu perfil"}
+        {user.pct === 100 ? "Editar mi perfil" : "Completá tu perfil"}
       </button>
 
-      {open && (
-        <EditModal
-          perfil={perfil}
-          onClose={() => setOpen(false)}
-          onSave={(p) => {
-            guardar(p);
-            setOpen(false);
-          }}
-        />
-      )}
+      {open && <EditModal user={user} onClose={() => setOpen(false)} />}
     </div>
   );
 }
 
-function EditModal({
-  perfil,
-  onClose,
-  onSave,
-}: {
-  perfil: PerfilLocal;
-  onClose: () => void;
-  onSave: (p: PerfilLocal) => void;
-}) {
-  const [form, setForm] = useState<PerfilLocal>(perfil);
+function EditModal({ user, onClose }: { user: Identidad; onClose: () => void }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [form, setForm] = useState({
+    firstName: user.firstName,
+    lastName: user.lastName,
+    area: user.area,
+  });
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -89,47 +76,44 @@ function EditModal({
     };
   }, [onClose]);
 
-  const set = (k: keyof PerfilLocal) => (e: React.ChangeEvent<HTMLInputElement>) =>
+  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((p) => ({ ...p, [k]: e.target.value }));
+
+  const guardar = () => {
+    startTransition(async () => {
+      await updateProfileAction(form);
+      router.refresh();
+      onClose();
+    });
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
-        onClick={onClose}
-        className="absolute inset-0 bg-navy/60 backdrop-blur-sm"
-      />
+      <div onClick={onClose} className="absolute inset-0 bg-navy/60 backdrop-blur-sm" />
       <div className="animate-rise relative w-full max-w-sm rounded-2xl border border-line bg-card p-6 text-ink shadow-lift">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold text-heading">Mi perfil</h3>
-          <button
-            onClick={onClose}
-            aria-label="Cerrar"
-            className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition hover:bg-surface"
-          >
+          <button onClick={onClose} aria-label="Cerrar" className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition hover:bg-surface">
             <X size={16} />
           </button>
         </div>
-        <p className="mt-1 text-sm text-muted">
-          Estos datos personalizan tu tablero. Se guardan en este navegador.
-        </p>
+        <p className="mt-1 text-sm text-muted">Estos datos personalizan tu portal.</p>
 
         <div className="mt-5 space-y-3">
-          <Campo label="Nombre" value={form.nombre} onChange={set("nombre")} placeholder="Mariano" autoFocus />
-          <Campo label="Apellido" value={form.apellido} onChange={set("apellido")} placeholder="Sosa" />
+          <Campo label="Nombre" value={form.firstName} onChange={set("firstName")} placeholder="Mariano" autoFocus />
+          <Campo label="Apellido" value={form.lastName} onChange={set("lastName")} placeholder="Sosa" />
           <Campo label="Área" value={form.area} onChange={set("area")} placeholder="Marketing" />
         </div>
 
         <div className="mt-6 flex gap-2">
           <button
-            onClick={() => onSave(form)}
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-bold text-white transition hover:bg-brand-light"
+            onClick={guardar}
+            disabled={pending}
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-bold text-white transition hover:bg-brand-light disabled:opacity-60"
           >
-            <Check size={15} /> Guardar
+            <Check size={15} /> {pending ? "Guardando…" : "Guardar"}
           </button>
-          <button
-            onClick={onClose}
-            className="rounded-xl border border-line px-4 py-2.5 text-sm font-semibold text-muted transition hover:bg-surface"
-          >
+          <button onClick={onClose} className="rounded-xl border border-line px-4 py-2.5 text-sm font-semibold text-muted transition hover:bg-surface">
             Cancelar
           </button>
         </div>
@@ -138,10 +122,7 @@ function EditModal({
   );
 }
 
-function Campo({
-  label,
-  ...props
-}: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+function Campo({ label, ...props }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <label className="block text-sm font-semibold text-ink">
       {label}

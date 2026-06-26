@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { FileText, GraduationCap, CalendarClock, Users } from "lucide-react";
 import { ProgressBar } from "@/components/dashboard/Progress";
 import { IdentityCard } from "@/components/dashboard/IdentityCard";
@@ -7,8 +8,12 @@ import { LiveStats } from "@/components/dashboard/LiveStats";
 import { TaskTracker } from "@/components/dashboard/TaskTracker";
 import { UpcomingEvents } from "@/components/dashboard/UpcomingEvents";
 import { CalendarAgenda } from "@/components/dashboard/CalendarAgenda";
+import { getCurrentUser } from "@/lib/user";
+import { toIdentidad } from "@/lib/identidad";
+import { getUpcomingCalendarEvents } from "@/lib/google";
 
 export const metadata = { title: "Mi tablero" };
+export const dynamic = "force-dynamic";
 
 /* ── Datos de muestra (Equipo / Cursos / Documentos / Actividad).
    Se conectan a fuentes reales en fases siguientes (directorio, Capacitaciones,
@@ -46,24 +51,31 @@ function iniciales(nombre: string) {
 }
 const AVATAR_COLORS = ["bg-brand", "bg-brand-accent", "bg-brand-light", "bg-navy-2", "bg-brand-accent-dark"];
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const user = await getCurrentUser();
+  if (!user) redirect("/login?next=/dashboard");
+  const identidad = toIdentidad(user);
+  const calEvents = user.googleRefreshToken
+    ? await getUpcomingCalendarEvents(user.googleRefreshToken)
+    : [];
+
   const now = new Date();
   const fechaLarga = `${now.getDate()} de ${MESES[now.getMonth()]} de ${now.getFullYear()}`;
 
   return (
     <>
-      <DashHero fecha={fechaLarga} />
+      <DashHero fecha={fechaLarga} nombre={identidad.firstName || identidad.nombre} perfilPct={identidad.pct} />
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid gap-5 lg:grid-cols-3">
           {/* Columna izquierda (2/3) */}
           <div className="space-y-5 lg:col-span-2">
             <div className="grid gap-5 md:grid-cols-5">
               <Reveal delay={40} className="md:col-span-2">
-                <IdentityCard />
+                <IdentityCard user={identidad} />
               </Reveal>
               <div className="space-y-5 md:col-span-3">
                 <Reveal delay={90}>
-                  <LiveStats />
+                  <LiveStats perfilPct={identidad.pct} />
                 </Reveal>
                 <Reveal delay={150}>
                   <ActivityChart />
@@ -77,7 +89,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="grid gap-5 md:grid-cols-2">
-              <Reveal delay={310}><CalendarAgenda /></Reveal>
+              <Reveal delay={310}><CalendarAgenda eventos={calEvents} /></Reveal>
               <Reveal delay={360}><DocumentsCard /></Reveal>
             </div>
           </div>
@@ -112,7 +124,7 @@ function Reveal({
 
 /* ── Componentes ─────────────────────────────────────────────────────────── */
 
-function DashHero({ fecha }: { fecha: string }) {
+function DashHero({ fecha, nombre, perfilPct }: { fecha: string; nombre: string; perfilPct: number }) {
   return (
     <section className="relative isolate overflow-hidden bg-navy">
       <div
@@ -131,8 +143,8 @@ function DashHero({ fecha }: { fecha: string }) {
       <div className="bg-dots-hero absolute inset-0 opacity-40" />
 
       <div className="relative mx-auto flex max-w-7xl flex-col gap-6 px-4 py-11 animate-rise sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-        <Greeting fecha={fecha} />
-        <HeroSummary />
+        <Greeting nombre={nombre} fecha={fecha} />
+        <HeroSummary perfilPct={perfilPct} />
       </div>
     </section>
   );

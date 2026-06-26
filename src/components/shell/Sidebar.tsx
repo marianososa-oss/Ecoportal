@@ -12,9 +12,12 @@ import {
   Menu,
   X,
   Sparkles,
+  LogOut,
+  User as UserIcon,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
+import type { Identidad } from "@/lib/identidad";
 
 type Item = {
   href: string;
@@ -109,7 +112,34 @@ function WelcomeChip() {
   );
 }
 
-export function Sidebar() {
+function UserCard({ user }: { user: Identidad }) {
+  return (
+    <div className="rounded-xl border border-line bg-surface/60 p-2.5">
+      <div className="flex items-center gap-2.5">
+        {user.avatarUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={user.avatarUrl} alt="" className="h-9 w-9 rounded-full object-cover" />
+        ) : (
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand text-white">
+            <UserIcon size={16} />
+          </span>
+        )}
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-xs font-bold text-heading">{user.nombre}</p>
+          <p className="truncate text-[10px] text-muted">{user.area || user.email}</p>
+        </div>
+      </div>
+      <a
+        href="/api/auth/logout"
+        className="mt-2 flex items-center justify-center gap-1.5 rounded-lg border border-line py-1.5 text-[11px] font-semibold text-muted transition hover:bg-card hover:text-red-500"
+      >
+        <LogOut size={12} /> Cerrar sesión
+      </a>
+    </div>
+  );
+}
+
+export function Sidebar({ user }: { user: Identidad | null }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -119,7 +149,7 @@ export function Sidebar() {
         <Brand />
         <NavList />
         <div className="flex flex-col gap-3">
-          <WelcomeChip />
+          {user ? <UserCard user={user} /> : <WelcomeChip />}
           <div className="flex items-center justify-between rounded-xl border border-line px-3 py-2">
             <span className="text-xs font-semibold text-muted">Tema</span>
             <ThemeToggle />
@@ -176,7 +206,7 @@ export function Sidebar() {
             </button>
           </div>
           <NavList onNavigate={() => setOpen(false)} />
-          <WelcomeChip />
+          {user ? <UserCard user={user} /> : <WelcomeChip />}
         </aside>
       </div>
     </>

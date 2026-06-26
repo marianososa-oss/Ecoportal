@@ -2,15 +2,13 @@
 
 import { CheckSquare, UserCircle, CalendarClock } from "lucide-react";
 import { useTareas, useEventos } from "@/lib/tablero-local";
-import { usePerfilLocal, completitud } from "@/lib/perfil-local";
 
-export function HeroSummary() {
+export function HeroSummary({ perfilPct }: { perfilPct: number }) {
   const { tareas } = useTareas();
   const { eventos } = useEventos();
-  const [perfil] = usePerfilLocal();
 
   const pendientes = tareas.filter((t) => t.estado !== "completa").length;
-  const pct = completitud(perfil);
+  const pct = perfilPct;
 
   return (
     <div className="flex flex-wrap gap-2.5">
