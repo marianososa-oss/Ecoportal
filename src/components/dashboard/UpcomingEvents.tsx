@@ -1,23 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { GraduationCap, Cake, CalendarClock, Plus, Trash2 } from "lucide-react";
-import { useEventos, type TipoEvento } from "@/lib/tablero-local";
+import { addEventAction, deleteEventAction } from "@/lib/actions/tablero";
 
-const ICON: Record<TipoEvento, React.ReactNode> = {
+export type TipoEvento = "capacitacion" | "cumple" | "evento";
+export type EventoView = { id: number; titulo: string; cuando: string; tipo: string };
+
+const ICON: Record<string, React.ReactNode> = {
   capacitacion: <GraduationCap size={15} />,
   cumple: <Cake size={15} />,
   evento: <CalendarClock size={15} />,
 };
-
 const TIPOS: { id: TipoEvento; label: string }[] = [
   { id: "capacitacion", label: "Capacitación" },
   { id: "cumple", label: "Cumpleaños" },
   { id: "evento", label: "Evento" },
 ];
 
-export function UpcomingEvents() {
-  const { eventos, agregar, borrar } = useEventos();
+export function UpcomingEvents({ eventos }: { eventos: EventoView[] }) {
+  const router = useRouter();
+  const [, startTransition] = useTransition();
   const [creando, setCreando] = useState(false);
   const [f, setF] = useState<{ titulo: string; cuando: string; tipo: TipoEvento }>({
     titulo: "",
@@ -25,11 +29,18 @@ export function UpcomingEvents() {
     tipo: "evento",
   });
 
+  const run = (fn: () => Promise<void>) =>
+    startTransition(async () => {
+      await fn();
+      router.refresh();
+    });
+
   const confirmar = () => {
     if (!f.titulo.trim()) return;
-    agregar(f.titulo, f.cuando, f.tipo);
+    const { titulo, cuando, tipo } = f;
     setF({ titulo: "", cuando: "", tipo: "evento" });
     setCreando(false);
+    run(() => addEventAction(titulo, cuando, tipo));
   };
 
   return (
@@ -71,36 +82,26 @@ export function UpcomingEvents() {
               className="rounded-lg border border-line bg-bg px-2 py-2 text-xs outline-none ring-brand/30 focus:ring-2"
             >
               {TIPOS.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.label}
-                </option>
+                <option key={t.id} value={t.id}>{t.label}</option>
               ))}
             </select>
-            <button
-              onClick={confirmar}
-              className="rounded-lg bg-brand px-3 py-2 text-xs font-bold text-white transition hover:bg-brand-light"
-            >
-              Ok
-            </button>
+            <button onClick={confirmar} className="rounded-lg bg-brand px-3 py-2 text-xs font-bold text-white transition hover:bg-brand-light">Ok</button>
           </div>
         </div>
       )}
 
       <ul className="mt-4 space-y-2">
         {eventos.map((e) => (
-          <li
-            key={e.id}
-            className="group flex items-center gap-3 rounded-xl border border-line bg-surface/40 p-3"
-          >
+          <li key={e.id} className="group flex items-center gap-3 rounded-xl border border-line bg-surface/40 p-3">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand text-white">
-              {ICON[e.tipo]}
+              {ICON[e.tipo] ?? ICON.evento}
             </span>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold text-ink">{e.titulo}</p>
               <p className="text-xs text-muted">{e.cuando}</p>
             </div>
             <button
-              onClick={() => borrar(e.id)}
+              onClick={() => run(() => deleteEventAction(e.id))}
               aria-label="Borrar"
               className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-muted opacity-0 transition hover:bg-card hover:text-red-500 group-hover:opacity-100"
             >

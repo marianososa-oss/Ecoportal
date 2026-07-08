@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Home,
   LayoutGrid,
   Image as ImageIcon,
   PenLine,
@@ -27,8 +26,7 @@ type Item = {
 };
 
 const NAV: Item[] = [
-  { href: "/", label: "Inicio", icon: Home },
-  { href: "/dashboard", label: "Mi tablero", icon: LayoutGrid },
+  { href: "/", label: "Mi día", icon: LayoutGrid },
   { href: "/perfil", label: "Imagen de perfil", icon: ImageIcon },
   { href: "/firma", label: "Firma de mail", icon: PenLine },
   { href: "/tour", label: "Tour guiado", icon: Compass, soon: true },

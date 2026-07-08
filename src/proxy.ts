@@ -8,6 +8,10 @@ export async function proxy(req: NextRequest) {
   if (!process.env.SESSION_SECRET || !process.env.GOOGLE_CLIENT_ID) {
     return NextResponse.next();
   }
+  // Solo dev: bypass para previsualizar el portal logueado.
+  if (process.env.NODE_ENV !== "production" && process.env.MOCK_USER === "1") {
+    return NextResponse.next();
+  }
   const session = await getSession(req.cookies.get(SESSION_COOKIE)?.value);
   if (!session) {
     const url = new URL("/login", req.url);

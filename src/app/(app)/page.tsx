@@ -1,119 +1,91 @@
-import Link from "next/link";
-import {
-  Image as ImageIcon,
-  PenLine,
-  Compass,
-  LayoutGrid,
-  ArrowRight,
-} from "lucide-react";
-import { PageHero } from "@/components/shell/PageHero";
+import { redirect } from "next/navigation";
+import { IdentityCard } from "@/components/dashboard/IdentityCard";
+import { Greeting } from "@/components/dashboard/Greeting";
+import { HeroSummary } from "@/components/dashboard/HeroSummary";
+import { LiveStats } from "@/components/dashboard/LiveStats";
+import { TaskTracker } from "@/components/dashboard/TaskTracker";
+import { UpcomingEvents } from "@/components/dashboard/UpcomingEvents";
+import { CalendarAgenda } from "@/components/dashboard/CalendarAgenda";
+import { OnboardingChecklist } from "@/components/dashboard/OnboardingChecklist";
+import { QuickAccess } from "@/components/dashboard/QuickAccess";
+import { getCurrentUser } from "@/lib/user";
+import { toIdentidad } from "@/lib/identidad";
+import { getUpcomingCalendarEvents } from "@/lib/google";
+import { getTasks, getEvents } from "@/db/queries";
 
-const FEATURES = [
-  {
-    href: "/perfil",
-    icon: ImageIcon,
-    titulo: "Imagen de perfil",
-    desc: "Tu placa institucional con nombre y área, lista para descargar.",
-    cta: "Crear mi imagen",
-    destacado: true,
-  },
-  {
-    href: "/firma",
-    icon: PenLine,
-    titulo: "Firma de mail",
-    desc: "Tu firma corporativa lista para pegar en Gmail en un clic.",
-    cta: "Crear mi firma",
-  },
-  {
-    href: "/dashboard",
-    icon: LayoutGrid,
-    titulo: "Mi tablero",
-    desc: "Agenda, tareas del día, equipo y eventos de tu área, todo junto.",
-    cta: "Ver mi tablero",
-  },
-  {
-    href: undefined,
-    icon: Compass,
-    titulo: "Tour guiado",
-    desc: "Un recorrido para conocer toda la web interna de Ecocontrol.",
-    cta: "Muy pronto",
-  },
-] as const;
+export const metadata = { title: "Mi día" };
+export const dynamic = "force-dynamic";
 
-export default function Home() {
+const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+
+export default async function MiDia() {
+  const user = await getCurrentUser();
+  if (!user) redirect("/login");
+  const identidad = toIdentidad(user);
+
+  const [tasks, events, calEvents] = await Promise.all([
+    getTasks(user.id),
+    getEvents(user.id),
+    user.googleRefreshToken ? getUpcomingCalendarEvents(user.googleRefreshToken) : Promise.resolve([]),
+  ]);
+
+  const tareas = tasks.map((t) => ({ id: t.id, titulo: t.titulo, cuando: t.cuando, estado: t.estado as "pendiente" | "completa" }));
+  const eventos = events.map((e) => ({ id: e.id, titulo: e.titulo, cuando: e.cuando, tipo: e.tipo }));
+  const pendientes = tareas.filter((t) => t.estado !== "completa").length;
+  const completas = tareas.filter((t) => t.estado === "completa").length;
+
+  const now = new Date();
+  const fecha = `${now.getDate()} de ${MESES[now.getMonth()]} de ${now.getFullYear()}`;
+
   return (
     <>
-      <PageHero
-        size="lg"
-        eyebrow="Bienvenida/o a Ecocontrol"
-        title="Tu portal personal del equipo"
-        subtitle="Dejá tu perfil listo en minutos y, muy pronto, vas a tener acá tu agenda, tus tareas y todo lo que se viene en tu área."
-      />
-      <div className="mx-auto max-w-6xl px-5 py-12 sm:px-8">
-        <div className="grid gap-5 sm:grid-cols-2">
-          {FEATURES.map((f, i) => (
-            <FeatureCard key={f.titulo} {...f} delay={i * 70} />
-          ))}
+      <section className="relative isolate overflow-hidden bg-navy">
+        <div aria-hidden className="absolute inset-0 bg-cover bg-right" style={{ backgroundImage: "url(/eco/shelter.jpg)" }} />
+        <div className="absolute inset-0 bg-gradient-to-r from-navy/97 via-navy/90 to-navy/55" />
+        <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-navy/30" />
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          <div className="animate-aurora absolute -left-24 -top-36 h-[30rem] w-[30rem] rounded-full blur-[120px] opacity-70" style={{ background: "radial-gradient(circle, var(--brand-light), transparent 65%)" }} />
+        </div>
+        <div className="bg-dots-hero absolute inset-0 opacity-40" />
+        <div className="relative mx-auto flex max-w-7xl flex-col gap-6 px-4 py-11 animate-rise sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+          <Greeting nombre={identidad.firstName || identidad.nombre} fecha={fecha} />
+          <HeroSummary perfilPct={identidad.pct} tareasPendientes={pendientes} eventosCount={eventos.length} />
+        </div>
+      </section>
+
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="grid gap-5 lg:grid-cols-3">
+          <div className="space-y-5 lg:col-span-2">
+            <div className="grid gap-5 md:grid-cols-5">
+              <Reveal delay={40} className="md:col-span-2"><IdentityCard user={identidad} /></Reveal>
+              <div className="space-y-5 md:col-span-3">
+                <Reveal delay={90}>
+                  <LiveStats perfilPct={identidad.pct} tareasTotal={tareas.length} tareasCompletas={completas} />
+                </Reveal>
+                <Reveal delay={150}>
+                  <OnboardingChecklist perfilDone={identidad.pct === 100} />
+                </Reveal>
+              </div>
+            </div>
+
+            <Reveal delay={210}><QuickAccess /></Reveal>
+            <Reveal delay={260}><CalendarAgenda eventos={calEvents} /></Reveal>
+          </div>
+
+          <div className="space-y-5">
+            <Reveal delay={120}><TaskTracker tareas={tareas} /></Reveal>
+            <Reveal delay={220}><UpcomingEvents eventos={eventos} /></Reveal>
+          </div>
         </div>
       </div>
     </>
   );
 }
 
-function FeatureCard({
-  href,
-  icon: Icon,
-  titulo,
-  desc,
-  cta,
-  destacado = false,
-  delay = 0,
-}: {
-  href?: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
-  titulo: string;
-  desc: string;
-  cta: string;
-  destacado?: boolean;
-  delay?: number;
-}) {
-  const inner = (
-    <div
-      style={{ animationDelay: `${delay}ms` }}
-      className={[
-        "group flex h-full animate-rise flex-col rounded-2xl border p-6 shadow-card transition-all duration-300",
-        href
-          ? "cursor-pointer border-line bg-card hover:-translate-y-1 hover:shadow-lift hover:border-brand/30"
-          : "border-dashed border-line bg-card/60",
-      ].join(" ")}
-    >
-      <div
-        className={[
-          "flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300",
-          destacado ? "bg-brand text-white" : "bg-surface text-brand",
-          href ? "group-hover:scale-110 group-hover:-rotate-3" : "",
-        ].join(" ")}
-      >
-        <Icon size={22} />
-      </div>
-      <h2 className="mt-4 text-lg font-bold text-heading">{titulo}</h2>
-      <p className="mt-1 flex-1 text-sm text-muted">{desc}</p>
-      <span
-        className={[
-          "mt-4 inline-flex items-center gap-1.5 text-sm font-semibold",
-          href ? "text-brand" : "text-muted",
-        ].join(" ")}
-      >
-        {cta}
-        {href && (
-          <ArrowRight
-            size={15}
-            className="transition-transform duration-200 group-hover:translate-x-1"
-          />
-        )}
-      </span>
+function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
+  return (
+    <div className={`animate-rise ${className}`} style={{ animationDelay: `${delay}ms` }}>
+      {children}
     </div>
   );
-
-  return href ? <Link href={href}>{inner}</Link> : inner;
 }
