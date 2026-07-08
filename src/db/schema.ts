@@ -27,6 +27,10 @@ export const users = pgTable(
     /** puesto, para la firma. */
     jobTitle: text("job_title").default("").notNull(),
     avatarUrl: text("avatar_url").default("").notNull(),
+    /** teléfono / interno para el directorio. */
+    phone: text("phone").default("").notNull(),
+    /** cumpleaños en formato "MM-DD" (sin año). */
+    birthday: text("birthday").default("").notNull(),
     /** "employee" | "rrhh" | "admin". */
     role: text("role").default("employee").notNull(),
     /** refresh token de Google para leer su Calendar del lado servidor. */

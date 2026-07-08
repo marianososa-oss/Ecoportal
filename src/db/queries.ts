@@ -69,7 +69,9 @@ export async function upsertUserFromGoogle(p: GoogleProfile): Promise<User> {
 
 export async function updateUserProfile(
   id: number,
-  data: Partial<Pick<User, "firstName" | "lastName" | "area" | "jobTitle" | "onboardingDone" | "tourDone">>,
+  data: Partial<
+    Pick<User, "firstName" | "lastName" | "area" | "jobTitle" | "phone" | "birthday" | "onboardingDone" | "tourDone">
+  >,
 ): Promise<User> {
   const [row] = await db
     .update(users)
@@ -77,6 +79,23 @@ export async function updateUserProfile(
     .where(eq(users.id, id))
     .returning();
   return row;
+}
+
+/** Todo el personal para el directorio (ordenado por área y nombre). */
+export async function getDirectorio(): Promise<User[]> {
+  return db
+    .select()
+    .from(users)
+    .orderBy(asc(users.area), asc(users.firstName), asc(users.lastName));
+}
+
+/** Cumpleaños del mes indicado (1–12), ordenados por día. */
+export async function getCumpleaniosDelMes(mes: number): Promise<User[]> {
+  const mm = String(mes).padStart(2, "0");
+  const todos = await db.select().from(users);
+  return todos
+    .filter((u) => u.birthday && u.birthday.slice(0, 2) === mm)
+    .sort((a, b) => a.birthday.localeCompare(b.birthday));
 }
 
 /* ── Tareas ───────────────────────────────────────────────────────────── */

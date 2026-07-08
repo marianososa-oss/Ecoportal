@@ -6,6 +6,8 @@ export type Identidad = {
   area: string;
   email: string;
   avatarUrl: string;
+  phone: string;
+  birthday: string;
   pct: number;
 };
 
@@ -23,6 +25,8 @@ export function toIdentidad(u: {
   area: string;
   email: string;
   avatarUrl: string;
+  phone?: string;
+  birthday?: string;
 }): Identidad {
   const nombre =
     `${u.firstName} ${u.lastName}`.trim() || u.name || u.email.split("@")[0];
@@ -33,6 +37,8 @@ export function toIdentidad(u: {
     area: u.area,
     email: u.email,
     avatarUrl: u.avatarUrl,
+    phone: u.phone ?? "",
+    birthday: u.birthday ?? "",
     pct: completitud(u.firstName, u.lastName, u.area),
   };
 }

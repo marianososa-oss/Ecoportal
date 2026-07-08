@@ -64,6 +64,8 @@ function EditModal({ user, onClose }: { user: Identidad; onClose: () => void }) 
     firstName: user.firstName,
     lastName: user.lastName,
     area: user.area,
+    phone: user.phone,
+    birthday: user.birthday, // "MM-DD"
   });
 
   useEffect(() => {
@@ -100,9 +102,25 @@ function EditModal({ user, onClose }: { user: Identidad; onClose: () => void }) 
         <p className="mt-1 text-sm text-muted">Estos datos personalizan tu portal.</p>
 
         <div className="mt-5 space-y-3">
-          <Campo label="Nombre" value={form.firstName} onChange={set("firstName")} placeholder="Mariano" autoFocus />
-          <Campo label="Apellido" value={form.lastName} onChange={set("lastName")} placeholder="Sosa" />
+          <div className="grid grid-cols-2 gap-3">
+            <Campo label="Nombre" value={form.firstName} onChange={set("firstName")} placeholder="Mariano" autoFocus />
+            <Campo label="Apellido" value={form.lastName} onChange={set("lastName")} placeholder="Sosa" />
+          </div>
           <Campo label="Área" value={form.area} onChange={set("area")} placeholder="Marketing" />
+          <div className="grid grid-cols-2 gap-3">
+            <Campo label="Teléfono / interno" value={form.phone} onChange={set("phone")} placeholder="Interno 123" />
+            <label className="block text-sm font-semibold text-ink">
+              Cumpleaños
+              <input
+                type="date"
+                value={form.birthday ? `2000-${form.birthday}` : ""}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, birthday: e.target.value ? e.target.value.slice(5) : "" }))
+                }
+                className="mt-1 w-full rounded-lg border border-line bg-bg px-3 py-2.5 text-sm outline-none ring-brand/30 transition focus:border-brand focus:ring-2"
+              />
+            </label>
+          </div>
         </div>
 
         <div className="mt-6 flex gap-2">
