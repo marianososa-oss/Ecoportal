@@ -1,8 +1,6 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Cake, Network, ArrowUpRight } from "lucide-react";
-
-const ORGANIGRAMA_URL =
-  "https://script.google.com/a/macros/ecocontrol.com.ar/s/AKfycbxMuzaZYNhfaPqTEedHPN7ht1L23k4hmhu8uTD_WDYiE-dbPzhJjaqqEp97eUqlszMo/exec";
+import { Cake, Network, ArrowRight } from "lucide-react";
 import { PageHero } from "@/components/shell/PageHero";
 import { Directorio, type Persona } from "@/components/gente/Directorio";
 import { Reconocimientos } from "@/components/gente/Reconocimientos";
@@ -54,11 +52,9 @@ export default async function GentePage() {
         subtitle="Encontrá a cualquier compañero por nombre o área, y contactalo en un clic."
       />
       <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
-        {/* Organigrama (app externa de Google, se abre en pestaña nueva) */}
-        <a
-          href={ORGANIGRAMA_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+        {/* Organigrama (vista embebida dentro del portal) */}
+        <Link
+          href="/organigrama"
           className="group mb-8 flex items-center gap-4 overflow-hidden rounded-2xl border border-brand/25 bg-gradient-to-br from-brand to-navy-2 p-5 text-white shadow-card transition-all duration-300 hover:shadow-lift sm:p-6"
         >
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm">
@@ -69,9 +65,9 @@ export default async function GentePage() {
             <p className="text-sm text-white/80">Mirá la estructura de la empresa y quién es quién por área.</p>
           </div>
           <span className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-brand transition group-hover:bg-white/90">
-            Abrir <ArrowUpRight size={15} />
+            Ver <ArrowRight size={15} />
           </span>
-        </a>
+        </Link>
 
         <Reconocimientos opciones={opciones} kudos={kudos} />
 
