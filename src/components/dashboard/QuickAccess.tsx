@@ -1,18 +1,19 @@
-import { Gauge, GraduationCap, Mail, CalendarDays, FolderOpen, ArrowUpRight } from "lucide-react";
+import { Gauge, GraduationCap, Network, Mail, CalendarDays, FolderOpen, ArrowUpRight } from "lucide-react";
 
 const ACCESOS = [
   { label: "EcoMonitor", desc: "Monitoreo HVAC", href: "https://eco-monitor-zeta.vercel.app", icon: Gauge, color: "text-brand" },
   { label: "Capacitaciones", desc: "Cursos internos", href: "https://ecocontrol-capacitaciones.vercel.app", icon: GraduationCap, color: "text-brand-accent-dark" },
-  { label: "Gmail", desc: "Tu correo", href: "https://mail.google.com", icon: Mail, color: "text-brand" },
-  { label: "Calendar", desc: "Tu agenda", href: "https://calendar.google.com", icon: CalendarDays, color: "text-brand-accent-dark" },
-  { label: "Drive", desc: "Tus archivos", href: "https://drive.google.com", icon: FolderOpen, color: "text-brand" },
+  { label: "Organigrama", desc: "Estructura", href: "https://script.google.com/a/macros/ecocontrol.com.ar/s/AKfycbxMuzaZYNhfaPqTEedHPN7ht1L23k4hmhu8uTD_WDYiE-dbPzhJjaqqEp97eUqlszMo/exec", icon: Network, color: "text-brand" },
+  { label: "Gmail", desc: "Tu correo", href: "https://mail.google.com", icon: Mail, color: "text-brand-accent-dark" },
+  { label: "Calendar", desc: "Tu agenda", href: "https://calendar.google.com", icon: CalendarDays, color: "text-brand" },
+  { label: "Drive", desc: "Tus archivos", href: "https://drive.google.com", icon: FolderOpen, color: "text-brand-accent-dark" },
 ];
 
 export function QuickAccess() {
   return (
     <section className="eco-sheen rounded-2xl border border-line bg-card p-5 shadow-card">
       <h2 className="font-bold text-heading">Accesos rápidos</h2>
-      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {ACCESOS.map((a) => {
           const Icon = a.icon;
           return (
