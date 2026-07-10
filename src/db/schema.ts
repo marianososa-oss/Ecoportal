@@ -79,6 +79,29 @@ export const events = pgTable(
   (t) => [index("events_user_idx").on(t.userId)],
 );
 
+/** Solicitudes de autogestión (vacaciones, licencias, etc.). */
+export const requests = pgTable(
+  "requests",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    /** "vacaciones" | "licencia" | "home_office" | "otro" */
+    tipo: text("tipo").notNull(),
+    desde: text("desde").default("").notNull(), // "YYYY-MM-DD"
+    hasta: text("hasta").default("").notNull(),
+    motivo: text("motivo").default("").notNull(),
+    /** "pendiente" | "aprobada" | "rechazada" */
+    estado: text("estado").default("pendiente").notNull(),
+    decidedBy: integer("decided_by"),
+    decidedAt: timestamp("decided_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [index("requests_user_idx").on(t.userId)],
+);
+
 export type User = typeof users.$inferSelect;
 export type Task = typeof tasks.$inferSelect;
 export type Event = typeof events.$inferSelect;
+export type Request = typeof requests.$inferSelect;

@@ -1,8 +1,8 @@
 import "server-only";
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 import { db } from "./index";
-import { users, tasks, events } from "./schema";
-import type { User, Task, Event } from "./schema";
+import { users, tasks, events, requests } from "./schema";
+import type { User, Task, Event, Request } from "./schema";
 
 /* ── Usuarios ─────────────────────────────────────────────────────────── */
 
@@ -153,4 +153,88 @@ export async function addEvent(
 
 export async function deleteEvent(userId: number, id: number): Promise<void> {
   await db.delete(events).where(and(eq(events.id, id), eq(events.userId, userId)));
+}
+
+/* ── Solicitudes (autogestión) ────────────────────────────────────────── */
+
+export async function getMyRequests(userId: number): Promise<Request[]> {
+  return db
+    .select()
+    .from(requests)
+    .where(eq(requests.userId, userId))
+    .orderBy(desc(requests.createdAt));
+}
+
+export async function createRequest(
+  userId: number,
+  tipo: string,
+  desde: string,
+  hasta: string,
+  motivo: string,
+): Promise<Request> {
+  const [row] = await db
+    .insert(requests)
+    .values({ userId, tipo, desde, hasta, motivo })
+    .returning();
+  return row;
+}
+
+export type RequestConSolicitante = {
+  id: number;
+  tipo: string;
+  desde: string;
+  hasta: string;
+  motivo: string;
+  estado: string;
+  createdAt: Date;
+  nombre: string;
+  area: string;
+  email: string;
+};
+
+/** Solicitudes pendientes con datos del solicitante (para RRHH). */
+export async function getPendingRequests(): Promise<RequestConSolicitante[]> {
+  const rows = await db
+    .select({
+      id: requests.id,
+      tipo: requests.tipo,
+      desde: requests.desde,
+      hasta: requests.hasta,
+      motivo: requests.motivo,
+      estado: requests.estado,
+      createdAt: requests.createdAt,
+      firstName: users.firstName,
+      lastName: users.lastName,
+      name: users.name,
+      area: users.area,
+      email: users.email,
+    })
+    .from(requests)
+    .innerJoin(users, eq(requests.userId, users.id))
+    .where(eq(requests.estado, "pendiente"))
+    .orderBy(desc(requests.createdAt));
+
+  return rows.map((r) => ({
+    id: r.id,
+    tipo: r.tipo,
+    desde: r.desde,
+    hasta: r.hasta,
+    motivo: r.motivo,
+    estado: r.estado,
+    createdAt: r.createdAt,
+    nombre: `${r.firstName} ${r.lastName}`.trim() || r.name || r.email.split("@")[0],
+    area: r.area,
+    email: r.email,
+  }));
+}
+
+export async function decideRequest(
+  id: number,
+  estado: "aprobada" | "rechazada",
+  deciderId: number,
+): Promise<void> {
+  await db
+    .update(requests)
+    .set({ estado, decidedBy: deciderId, decidedAt: new Date() })
+    .where(eq(requests.id, id));
 }

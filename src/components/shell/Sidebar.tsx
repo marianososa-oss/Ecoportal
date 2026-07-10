@@ -14,6 +14,7 @@ import {
   LogOut,
   User as UserIcon,
   Users,
+  ClipboardCheck,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
@@ -29,6 +30,7 @@ type Item = {
 const NAV: Item[] = [
   { href: "/", label: "Mi día", icon: LayoutGrid },
   { href: "/gente", label: "Gente", icon: Users },
+  { href: "/autogestion", label: "Autogestión", icon: ClipboardCheck },
   { href: "/perfil", label: "Imagen de perfil", icon: ImageIcon },
   { href: "/firma", label: "Firma de mail", icon: PenLine },
   { href: "/tour", label: "Tour guiado", icon: Compass, soon: true },
