@@ -4,13 +4,13 @@
 
 /* ── Tokens de color (claro = :root, oscuro = .dark) ─────────────────────── */
 :root {
-  --bg: #ffffff;
-  --surface: #eef3f9;
+  --bg: #f4f7fb;
+  --surface: #eaf0f7;
   --card: #ffffff;
   --ink: #16314f;
   --heading: #00478f;
   --muted: #5a6b80;
-  --line: #dce5f0;
+  --line: #e2e9f2;
 
   --brand: #00478f;
   --brand-light: #1768c4;
@@ -21,10 +21,10 @@
   --navy: #042747;
   --navy-2: #073461;
 
-  --dot: rgba(0, 71, 143, 0.14);
+  --dot: rgba(0, 71, 143, 0.10);
 
-  --shadow-card: 0 1px 2px rgba(8, 26, 48, 0.05), 0 10px 30px -16px rgba(8, 26, 48, 0.22);
-  --shadow-lift: 0 22px 48px -22px rgba(8, 26, 48, 0.4);
+  --shadow-card: 0 1px 2px -1px rgba(16, 42, 76, 0.08), 0 5px 14px -6px rgba(16, 42, 76, 0.12), 0 14px 36px -18px rgba(16, 42, 76, 0.14);
+  --shadow-lift: 0 2px 6px -2px rgba(16, 42, 76, 0.12), 0 20px 44px -16px rgba(16, 42, 76, 0.28);
 
   color-scheme: light;
 }
@@ -47,10 +47,10 @@
   --navy: #050f1f;
   --navy-2: #0a2348;
 
-  --dot: rgba(120, 170, 230, 0.12);
+  --dot: rgba(120, 170, 230, 0.10);
 
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px -16px rgba(0, 0, 0, 0.55);
-  --shadow-lift: 0 24px 50px -22px rgba(0, 0, 0, 0.7);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 24px -10px rgba(0, 0, 0, 0.5);
+  --shadow-lift: 0 2px 8px rgba(0, 0, 0, 0.45), 0 26px 52px -20px rgba(0, 0, 0, 0.72);
 
   color-scheme: dark;
 }
@@ -119,6 +119,29 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   transition: color 0.3s ease;
+}
+
+h1, h2, h3, h4 {
+  letter-spacing: -0.012em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 5px;
+}
+
+/* ── Tarjeta premium (brillo sutil arriba en modo noche) ─────────────────── */
+.eco-sheen {
+  position: relative;
+}
+.dark .eco-sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 42%);
+  pointer-events: none;
 }
 
 /* ── Grilla de puntos tipo blueprint ─────────────────────────────────────── */

@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Circle, Plus, Trash2, Pencil, X } from "lucide-react";
+import { Check, Circle, Plus, Trash2, Pencil, X, ListTodo } from "lucide-react";
 import {
   addTaskAction,
   toggleTaskAction,
@@ -60,7 +60,7 @@ export function TaskTracker({ tareas }: { tareas: TareaView[] }) {
   };
 
   return (
-    <section className="rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:shadow-lift">
+    <section className="eco-sheen rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:shadow-lift">
       <div className="flex items-center justify-between">
         <h2 className="font-bold text-heading">Tareas</h2>
         <button
@@ -172,8 +172,14 @@ export function TaskTracker({ tareas }: { tareas: TareaView[] }) {
           );
         })}
         {visibles.length === 0 && (
-          <li className="px-2 py-6 text-center text-sm text-muted">
-            {tab === "completa" ? "Todavía no completaste nada." : "Sin tareas. ¡Agregá una! 👆"}
+          <li className="flex flex-col items-center gap-1.5 px-2 py-8 text-center">
+            <ListTodo size={22} className="text-line" />
+            <p className="text-sm font-semibold text-heading">
+              {tab === "completa" ? "Nada completado aún" : "Sin tareas por ahora"}
+            </p>
+            <p className="text-xs text-muted">
+              {tab === "completa" ? "Cuando marques una, aparece acá." : "Tocá “+ Nueva” para agregar tu primera."}
+            </p>
           </li>
         )}
       </ul>

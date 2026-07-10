@@ -1,4 +1,4 @@
-import { CalendarClock, CalendarCheck2 } from "lucide-react";
+import { CalendarClock, CalendarCheck2, ArrowUpRight } from "lucide-react";
 import type { CalEvent } from "@/lib/google";
 
 const MESES = [
@@ -7,7 +7,7 @@ const MESES = [
 ];
 const MES_ABBR = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
 const DIA_ABBR = ["dom","lun","mar","mié","jue","vie","sáb"];
-const DOW = ["lun", "mar", "mié", "jue", "vie", "sáb", "dom"];
+const DOW = ["L", "M", "M", "J", "V", "S", "D"];
 
 function fmtEvento(inicio: string | null, todoElDia: boolean): string {
   if (!inicio) return "";
@@ -31,57 +31,85 @@ export function CalendarAgenda({ eventos }: { eventos: CalEvent[] }) {
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ];
 
+  // Días de ESTE mes con eventos, para marcarlos con un punto.
+  const conEvento = new Set<number>();
+  for (const e of eventos) {
+    if (!e.inicio) continue;
+    const d = new Date(e.inicio);
+    if (d.getFullYear() === year && d.getMonth() === month) conEvento.add(d.getDate());
+  }
+
   return (
-    <div className="rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
-      <div className="flex items-center gap-2">
-        <CalendarClock size={15} className="text-brand" />
-        <h2 className="font-bold text-heading">
-          Mi agenda · {MESES[month][0].toUpperCase()}{MESES[month].slice(1)}
-        </h2>
-      </div>
-
-      <div className="mt-4 grid grid-cols-7 gap-1 text-center">
-        {DOW.map((d) => (
-          <span key={d} className="text-[10px] font-bold uppercase text-muted">{d}</span>
-        ))}
-        {celdas.map((d, i) => (
-          <div key={i} className="flex aspect-square items-center justify-center">
-            {d && (
-              <span
-                className={`flex h-7 w-7 items-center justify-center rounded-full text-xs transition ${
-                  d === today ? "bg-brand font-bold text-white" : "text-ink hover:bg-surface"
-                }`}
-              >
-                {d}
-              </span>
-            )}
+    <div className="eco-sheen rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift md:p-6">
+      <div className="grid gap-6 sm:grid-cols-[auto_1fr]">
+        {/* Mini calendario */}
+        <div className="sm:w-64">
+          <div className="flex items-center gap-2">
+            <CalendarClock size={15} className="text-brand" />
+            <h2 className="font-bold text-heading">
+              {MESES[month][0].toUpperCase()}{MESES[month].slice(1)} {year}
+            </h2>
           </div>
-        ))}
-      </div>
-
-      {/* Próximos eventos de Google Calendar */}
-      <div className="mt-4 border-t border-line pt-3">
-        <p className="flex items-center gap-1.5 text-xs font-bold text-heading">
-          <CalendarCheck2 size={13} className="text-brand-accent" /> Próximos eventos
-        </p>
-        {eventos.length > 0 ? (
-          <ul className="mt-2 space-y-1.5">
-            {eventos.slice(0, 4).map((e) => (
-              <li key={e.id} className="flex items-start gap-2 text-xs">
-                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
-                <div className="min-w-0">
-                  <p className="truncate font-semibold text-ink">{e.titulo}</p>
-                  <p className="text-[11px] text-muted">{fmtEvento(e.inicio, e.todoElDia)}</p>
-                </div>
-              </li>
+          <div className="mt-4 grid grid-cols-7 gap-0.5 text-center">
+            {DOW.map((d, i) => (
+              <span key={i} className="pb-1 text-[10px] font-bold uppercase text-muted">{d}</span>
             ))}
-          </ul>
-        ) : (
-          <p className="mt-2 text-[11px] leading-snug text-muted">
-            No tenés eventos próximos en tu Google Calendar (o todavía no diste
-            permiso). Se actualiza solo.
-          </p>
-        )}
+            {celdas.map((d, i) => (
+              <div key={i} className="flex h-8 items-center justify-center">
+                {d && (
+                  <span
+                    className={`relative flex h-7 w-7 items-center justify-center rounded-full text-xs transition ${
+                      d === today
+                        ? "bg-brand font-bold text-white shadow-card"
+                        : "text-ink hover:bg-surface"
+                    }`}
+                  >
+                    {d}
+                    {conEvento.has(d) && d !== today && (
+                      <span className="absolute bottom-0.5 h-1 w-1 rounded-full bg-brand-accent" />
+                    )}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Próximos eventos del Calendar */}
+        <div className="border-t border-line pt-4 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
+          <div className="flex items-center justify-between">
+            <p className="flex items-center gap-1.5 text-sm font-bold text-heading">
+              <CalendarCheck2 size={14} className="text-brand-accent" /> Próximos eventos
+            </p>
+            <a
+              href="https://calendar.google.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-0.5 text-xs font-semibold text-brand hover:text-brand-light"
+            >
+              Abrir <ArrowUpRight size={12} />
+            </a>
+          </div>
+          {eventos.length > 0 ? (
+            <ul className="mt-3 space-y-2.5">
+              {eventos.slice(0, 5).map((e) => (
+                <li key={e.id} className="flex items-start gap-2.5">
+                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand" />
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-ink">{e.titulo}</p>
+                    <p className="text-xs text-muted">{fmtEvento(e.inicio, e.todoElDia)}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="mt-4 flex flex-col items-center gap-1.5 rounded-xl border border-dashed border-line bg-surface/40 py-6 text-center">
+              <CalendarCheck2 size={20} className="text-muted" />
+              <p className="text-xs text-muted">No tenés eventos próximos.</p>
+              <p className="text-[11px] text-muted/80">Se sincroniza con tu Google Calendar.</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

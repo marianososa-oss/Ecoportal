@@ -44,7 +44,7 @@ export function UpcomingEvents({ eventos }: { eventos: EventoView[] }) {
   };
 
   return (
-    <section className="rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:shadow-lift">
+    <section className="eco-sheen rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:shadow-lift">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <CalendarClock size={15} className="text-brand" />
@@ -110,8 +110,10 @@ export function UpcomingEvents({ eventos }: { eventos: EventoView[] }) {
           </li>
         ))}
         {eventos.length === 0 && (
-          <li className="px-2 py-6 text-center text-sm text-muted">
-            Sin eventos cargados. Agregá el primero 👆
+          <li className="flex flex-col items-center gap-1.5 px-2 py-8 text-center">
+            <CalendarClock size={22} className="text-line" />
+            <p className="text-sm font-semibold text-heading">Sin eventos por ahora</p>
+            <p className="text-xs text-muted">Cargá capacitaciones, cumpleaños o reuniones de tu área.</p>
           </li>
         )}
       </ul>
