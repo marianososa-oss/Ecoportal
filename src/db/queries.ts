@@ -1,7 +1,8 @@
 import "server-only";
 import { and, asc, desc, eq } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import { db } from "./index";
-import { users, tasks, events, requests } from "./schema";
+import { users, tasks, events, requests, kudos } from "./schema";
 import type { User, Task, Event, Request } from "./schema";
 
 /* ── Usuarios ─────────────────────────────────────────────────────────── */
@@ -237,4 +238,52 @@ export async function decideRequest(
     .update(requests)
     .set({ estado, decidedBy: deciderId, decidedAt: new Date() })
     .where(eq(requests.id, id));
+}
+
+/* ── Reconocimientos (kudos) ──────────────────────────────────────────── */
+
+export async function createKudo(fromUserId: number, toUserId: number, mensaje: string) {
+  await db.insert(kudos).values({ fromUserId, toUserId, mensaje: mensaje.trim() });
+}
+
+export type KudoView = {
+  id: number;
+  mensaje: string;
+  createdAt: Date;
+  de: string;
+  para: string;
+  paraArea: string;
+  paraAvatar: string;
+};
+
+export async function getRecentKudos(limit = 12): Promise<KudoView[]> {
+  const f = alias(users, "kudo_from");
+  const t = alias(users, "kudo_to");
+  const rows = await db
+    .select({
+      id: kudos.id,
+      mensaje: kudos.mensaje,
+      createdAt: kudos.createdAt,
+      deFirst: f.firstName, deLast: f.lastName, deName: f.name, deEmail: f.email,
+      paraFirst: t.firstName, paraLast: t.lastName, paraName: t.name, paraEmail: t.email,
+      paraArea: t.area, paraAvatar: t.avatarUrl,
+    })
+    .from(kudos)
+    .innerJoin(f, eq(kudos.fromUserId, f.id))
+    .innerJoin(t, eq(kudos.toUserId, t.id))
+    .orderBy(desc(kudos.createdAt))
+    .limit(limit);
+
+  const nombre = (fn: string, ln: string, nm: string, em: string) =>
+    `${fn} ${ln}`.trim() || nm || em.split("@")[0];
+
+  return rows.map((r) => ({
+    id: r.id,
+    mensaje: r.mensaje,
+    createdAt: r.createdAt,
+    de: nombre(r.deFirst, r.deLast, r.deName, r.deEmail),
+    para: nombre(r.paraFirst, r.paraLast, r.paraName, r.paraEmail),
+    paraArea: r.paraArea,
+    paraAvatar: r.paraAvatar,
+  }));
 }

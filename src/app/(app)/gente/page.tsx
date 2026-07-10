@@ -2,8 +2,9 @@ import { redirect } from "next/navigation";
 import { Cake } from "lucide-react";
 import { PageHero } from "@/components/shell/PageHero";
 import { Directorio, type Persona } from "@/components/gente/Directorio";
+import { Reconocimientos } from "@/components/gente/Reconocimientos";
 import { getCurrentUser } from "@/lib/user";
-import { getDirectorio, getCumpleaniosDelMes } from "@/db/queries";
+import { getDirectorio, getCumpleaniosDelMes, getRecentKudos } from "@/db/queries";
 
 export const metadata = { title: "Gente" };
 export const dynamic = "force-dynamic";
@@ -22,10 +23,15 @@ export default async function GentePage() {
   if (!user) redirect("/login");
 
   const now = new Date();
-  const [todos, cumples] = await Promise.all([
+  const [todos, cumples, kudos] = await Promise.all([
     getDirectorio(),
     getCumpleaniosDelMes(now.getMonth() + 1),
+    getRecentKudos(),
   ]);
+
+  const opciones = todos
+    .filter((u) => u.id !== user.id)
+    .map((u) => ({ id: u.id, nombre: nombreDe(u) }));
 
   const personas: Persona[] = todos.map((u) => ({
     id: u.id,
@@ -45,6 +51,8 @@ export default async function GentePage() {
         subtitle="Encontrá a cualquier compañero por nombre o área, y contactalo en un clic."
       />
       <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
+        <Reconocimientos opciones={opciones} kudos={kudos} />
+
         {/* Cumpleaños del mes */}
         {cumples.length > 0 && (
           <section className="mb-8 rounded-2xl border border-line bg-card p-5 shadow-card">

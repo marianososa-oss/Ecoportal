@@ -101,7 +101,25 @@ export const requests = pgTable(
   (t) => [index("requests_user_idx").on(t.userId)],
 );
 
+/** Reconocimientos (kudos) entre compañeros. */
+export const kudos = pgTable(
+  "kudos",
+  {
+    id: serial("id").primaryKey(),
+    fromUserId: integer("from_user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    toUserId: integer("to_user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    mensaje: text("mensaje").default("").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [index("kudos_to_idx").on(t.toUserId)],
+);
+
 export type User = typeof users.$inferSelect;
 export type Task = typeof tasks.$inferSelect;
 export type Event = typeof events.$inferSelect;
 export type Request = typeof requests.$inferSelect;
+export type Kudo = typeof kudos.$inferSelect;
