@@ -206,7 +206,7 @@ export function ProfileImageGenerator({
             ref={canvasRef}
             width={SIZE}
             height={SIZE}
-            className="block h-auto w-full"
+            className="block aspect-square w-full"
           />
         </div>
         <p className="mt-3 text-center text-xs text-muted">
