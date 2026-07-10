@@ -31,9 +31,20 @@ type GoogleProfile = {
   refreshToken?: string;
 };
 
+/** Saca sufijos tipo "(Ecocontrol)" que agregan las cuentas de Google. */
+export function limpiarNombre(s: string | undefined | null): string {
+  return (s ?? "")
+    .replace(/\s*\([^)]*ecocontrol[^)]*\)/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 /** Crea o actualiza el empleado a partir del perfil de Google. */
 export async function upsertUserFromGoogle(p: GoogleProfile): Promise<User> {
   const email = p.email.toLowerCase();
+  const nombre = limpiarNombre(p.name);
+  const given = limpiarNombre(p.givenName);
+  const family = limpiarNombre(p.familyName);
   const existing = await getUserByEmail(email);
 
   if (existing) {
@@ -41,7 +52,7 @@ export async function upsertUserFromGoogle(p: GoogleProfile): Promise<User> {
       .update(users)
       .set({
         googleSub: p.sub,
-        name: p.name ?? existing.name,
+        name: nombre || existing.name,
         avatarUrl: p.picture ?? existing.avatarUrl,
         ...(p.refreshToken ? { googleRefreshToken: p.refreshToken } : {}),
         lastLoginAt: new Date(),
@@ -57,9 +68,9 @@ export async function upsertUserFromGoogle(p: GoogleProfile): Promise<User> {
     .values({
       googleSub: p.sub,
       email,
-      name: p.name ?? "",
-      firstName: p.givenName ?? "",
-      lastName: p.familyName ?? "",
+      name: nombre,
+      firstName: given,
+      lastName: family,
       avatarUrl: p.picture ?? "",
       googleRefreshToken: p.refreshToken ?? "",
       lastLoginAt: new Date(),
