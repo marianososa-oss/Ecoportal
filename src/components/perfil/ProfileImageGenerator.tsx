@@ -7,8 +7,8 @@ import { Download, RefreshCw } from "lucide-react";
    celeste del medio. Son fáciles de ajustar si hace falta correr algo. */
 const SIZE = 800;
 const CENTER_X = SIZE / 2;
-const NAME = { cy: 452, font: 40, min: 22, maxW: 430, spacing: 1 };
-const AREA = { cy: 491, font: 22, min: 14, maxW: 430, spacing: 2 };
+const NAME = { cy: 448, font: 35, min: 20, maxW: 430, spacing: 1 };
+const AREA = { cy: 482, font: 21, min: 13, maxW: 430, spacing: 2 };
 
 const AREAS_SUGERIDAS = [
   "Marketing",
