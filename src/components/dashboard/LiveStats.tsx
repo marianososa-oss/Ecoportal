@@ -14,23 +14,28 @@ export function LiveStats({
 
   return (
     <div className="grid grid-cols-2 gap-5">
-      <Stat icon={<CheckCircle2 size={16} />} titulo="Tareas completas" valor={`${tareasCompletas}/${tareasTotal}`} pct={pctTareas} />
-      <Stat icon={<UserCircle size={16} />} titulo="Perfil completo" valor={`${perfilPct}%`} pct={perfilPct} />
+      <Stat icon={<CheckCircle2 size={16} />} titulo="Tareas completas" valor={`${tareasCompletas}/${tareasTotal}`} pct={pctTareas} tone="var(--eco-aire)" />
+      <Stat icon={<UserCircle size={16} />} titulo="Perfil completo" valor={`${perfilPct}%`} pct={perfilPct} tone="var(--eco-humedad)" />
     </div>
   );
 }
 
-function Stat({ icon, titulo, valor, pct }: { icon: React.ReactNode; titulo: string; valor: string; pct: number }) {
+function Stat({ icon, titulo, valor, pct, tone }: { icon: React.ReactNode; titulo: string; valor: string; pct: number; tone: string }) {
   return (
-    <div className="eco-card eco-card-hover p-4">
+    <div className="eco-tile eco-card eco-card-hover p-4" style={{ ["--tone" as string]: tone }}>
       <div className="flex items-center gap-2 text-muted">
-        <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface text-brand">{icon}</span>
+        <span
+          className="flex h-7 w-7 items-center justify-center rounded-lg"
+          style={{ color: "var(--tone)", background: "color-mix(in srgb, var(--tone) 14%, transparent)" }}
+        >
+          {icon}
+        </span>
         <span className="text-xs font-semibold">{titulo}</span>
       </div>
       <p className="mt-3 text-2xl font-extrabold text-heading">{valor}</p>
       <div className="mt-2 flex items-center gap-2">
-        <ProgressBar pct={pct} className="flex-1" />
-        <span className="text-xs font-bold text-brand-accent-dark">{pct}%</span>
+        <ProgressBar pct={pct} className="flex-1" tone={tone} />
+        <span className="text-xs font-bold" style={{ color: "var(--tone)" }}>{pct}%</span>
       </div>
     </div>
   );

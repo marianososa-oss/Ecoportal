@@ -17,6 +17,17 @@ function iniciales(nombre: string) {
   return nombre.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
 }
 
+/* Paleta de servicios de Ecocontrol: cada área toma un color de la franja. */
+const TONOS = [
+  "var(--eco-humedad)",
+  "var(--eco-aire)",
+  "var(--eco-monitoreo)",
+  "var(--eco-presion)",
+  "var(--eco-temp)",
+  "var(--eco-explosivos)",
+  "var(--eco-renovables)",
+];
+
 export function Directorio({ personas }: { personas: Persona[] }) {
   const [q, setQ] = useState("");
 
@@ -60,23 +71,37 @@ export function Directorio({ personas }: { personas: Persona[] }) {
         </div>
       ) : (
         <div className="mt-6 space-y-8">
-          {grupos.map(([area, ps]) => (
-            <section key={area}>
-              <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-brand">
+          {grupos.map(([area, ps], gi) => {
+            const tono = TONOS[gi % TONOS.length];
+            return (
+            <section key={area} style={{ ["--tone" as string]: tono }}>
+              <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-heading">
+                <span aria-hidden className="h-4 w-1.5 rounded-full" style={{ background: "var(--tone)" }} />
                 {area}
-                <span className="rounded-full bg-surface px-2 py-0.5 text-[10px] font-bold text-muted">{ps.length}</span>
+                <span
+                  className="rounded-full px-2 py-0.5 text-[10px] font-bold"
+                  style={{
+                    color: "var(--tone)",
+                    background: "color-mix(in srgb, var(--tone) 14%, transparent)",
+                  }}
+                >
+                  {ps.length}
+                </span>
               </h2>
               <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {ps.map((p) => (
                   <div
                     key={p.id}
-                    className="flex items-center gap-3 eco-card eco-card-hover p-4"
+                    className="eco-tile flex items-center gap-3 eco-card eco-card-hover p-4"
                   >
                     {p.avatarUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={p.avatarUrl} alt="" className="h-12 w-12 shrink-0 rounded-full object-cover" />
                     ) : (
-                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">
+                      <span
+                        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
+                        style={{ background: "var(--tone)" }}
+                      >
                         {iniciales(p.nombre)}
                       </span>
                     )}
@@ -103,7 +128,8 @@ export function Directorio({ personas }: { personas: Persona[] }) {
                 ))}
               </div>
             </section>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

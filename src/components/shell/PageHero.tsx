@@ -20,7 +20,23 @@ export function HeroBackdrop({ image = "/eco/shelter.jpg" }: { image?: string })
         />
       </div>
       <div className="bg-dots-hero absolute inset-0 opacity-40" />
+      <EcoStrip />
     </>
+  );
+}
+
+/** Franja de los 7 servicios de Ecocontrol: la firma visual de la marca. */
+export function EcoStrip({ className = "" }: { className?: string }) {
+  return (
+    <div aria-hidden className={`absolute inset-x-0 bottom-0 flex h-1.5 ${className}`}>
+      <span className="flex-1" style={{ background: "var(--eco-temp-soft)" }} />
+      <span className="flex-1 bg-eco-humedad" />
+      <span className="flex-1 bg-eco-aire" />
+      <span className="flex-1 bg-eco-renovables" />
+      <span className="flex-1 bg-eco-explosivos" />
+      <span className="flex-1 bg-eco-monitoreo" />
+      <span className="flex-1 bg-eco-presion" />
+    </div>
   );
 }
 
@@ -50,8 +66,8 @@ export function PageHero({
       >
         {eyebrow && (
           <p
-            className="animate-rise text-xs font-bold uppercase tracking-[0.24em] text-brand-accent"
-            style={{ animationDelay: "0ms" }}
+            className="animate-rise text-xs font-bold uppercase tracking-[0.24em]"
+            style={{ animationDelay: "0ms", color: "var(--eco-aire)" }}
           >
             {eyebrow}
           </p>

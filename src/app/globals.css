@@ -21,6 +21,17 @@
   --navy: #042747;
   --navy-2: #073461;
 
+  /* Paleta de servicios Ecocontrol (la franja de la placa / banner) */
+  --eco-temp: #34505f;
+  /* Versión legible del gris azulado cuando va sobre el navy del hero */
+  --eco-temp-soft: #5f8496;
+  --eco-humedad: #14a9d5;
+  --eco-aire: #8cc63f;
+  --eco-renovables: #c8d92f;
+  --eco-explosivos: #fcc72c;
+  --eco-monitoreo: #f5922e;
+  --eco-presion: #ee4d5a;
+
   --dot: rgba(0, 71, 143, 0.10);
 
   --shadow-card: 0 1px 2px -1px rgba(16, 42, 76, 0.08), 0 5px 14px -6px rgba(16, 42, 76, 0.12), 0 14px 36px -18px rgba(16, 42, 76, 0.14);
@@ -98,6 +109,14 @@
   --color-navy: var(--navy);
   --color-navy-2: var(--navy-2);
 
+  --color-eco-temp: var(--eco-temp);
+  --color-eco-humedad: var(--eco-humedad);
+  --color-eco-aire: var(--eco-aire);
+  --color-eco-renovables: var(--eco-renovables);
+  --color-eco-explosivos: var(--eco-explosivos);
+  --color-eco-monitoreo: var(--eco-monitoreo);
+  --color-eco-presion: var(--eco-presion);
+
   --font-sans: var(--font-jost), system-ui, sans-serif;
 
   --shadow-card: var(--shadow-card);
@@ -168,6 +187,11 @@ h1, h2, h3, h4 {
 
 .eco-sheen {
   position: relative;
+}
+
+/* Tarjeta que toma un color de la paleta de servicios (--tone) */
+.eco-tile:hover {
+  border-color: color-mix(in srgb, var(--tone) 45%, transparent);
 }
 
 /* ── Grilla de puntos tipo blueprint ─────────────────────────────────────── */

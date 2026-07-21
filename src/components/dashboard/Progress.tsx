@@ -9,12 +9,15 @@ export function ProgressBar({
   fill = "bg-brand-accent",
   track = "bg-surface",
   height = "h-1.5",
+  tone,
 }: {
   pct: number;
   className?: string;
   fill?: string;
   track?: string;
   height?: string;
+  /** Color de la paleta de servicios; si viene, pisa `fill`. */
+  tone?: string;
 }) {
   const [w, setW] = useState(0);
   useEffect(() => {
@@ -25,8 +28,8 @@ export function ProgressBar({
   return (
     <div className={`${height} overflow-hidden rounded-full ${track} ${className}`}>
       <div
-        className={`h-full rounded-full ${fill} transition-[width] duration-700 ease-[cubic-bezier(.22,1,.36,1)] motion-reduce:transition-none`}
-        style={{ width: `${w}%` }}
+        className={`h-full rounded-full ${tone ? "" : fill} transition-[width] duration-700 ease-[cubic-bezier(.22,1,.36,1)] motion-reduce:transition-none`}
+        style={{ width: `${w}%`, ...(tone ? { background: tone } : null) }}
       />
     </div>
   );

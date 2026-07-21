@@ -13,6 +13,12 @@ const ICON: Record<string, React.ReactNode> = {
   cumple: <Cake size={15} />,
   evento: <CalendarClock size={15} />,
 };
+/* Cada tipo de evento toma un color de la paleta de servicios. */
+const TONO: Record<string, string> = {
+  capacitacion: "var(--eco-aire)",
+  cumple: "var(--eco-presion)",
+  evento: "var(--eco-humedad)",
+};
 const TIPOS: { id: TipoEvento; label: string }[] = [
   { id: "capacitacion", label: "Capacitación" },
   { id: "cumple", label: "Cumpleaños" },
@@ -93,7 +99,10 @@ export function UpcomingEvents({ eventos }: { eventos: EventoView[] }) {
       <ul className="mt-4 space-y-2">
         {eventos.map((e) => (
           <li key={e.id} className="group flex items-center gap-3 rounded-xl border border-line bg-surface/40 p-3">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand text-white">
+            <span
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white"
+              style={{ background: TONO[e.tipo] ?? TONO.evento }}
+            >
               {ICON[e.tipo] ?? ICON.evento}
             </span>
             <div className="min-w-0 flex-1">
