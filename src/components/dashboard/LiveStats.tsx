@@ -22,7 +22,7 @@ export function LiveStats({
 
 function Stat({ icon, titulo, valor, pct }: { icon: React.ReactNode; titulo: string; valor: string; pct: number }) {
   return (
-    <div className="rounded-2xl border border-line bg-card p-4 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
+    <div className="eco-card eco-card-hover p-4">
       <div className="flex items-center gap-2 text-muted">
         <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface text-brand">{icon}</span>
         <span className="text-xs font-semibold">{titulo}</span>

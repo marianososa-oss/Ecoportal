@@ -8,6 +8,7 @@ import { UpcomingEvents } from "@/components/dashboard/UpcomingEvents";
 import { CalendarAgenda } from "@/components/dashboard/CalendarAgenda";
 import { OnboardingChecklist } from "@/components/dashboard/OnboardingChecklist";
 import { QuickAccess } from "@/components/dashboard/QuickAccess";
+import { HeroBackdrop } from "@/components/shell/PageHero";
 import { getCurrentUser } from "@/lib/user";
 import { toIdentidad } from "@/lib/identidad";
 import { getUpcomingCalendarEvents } from "@/lib/google";
@@ -40,13 +41,7 @@ export default async function MiDia() {
   return (
     <>
       <section className="relative isolate overflow-hidden bg-navy">
-        <div aria-hidden className="absolute inset-0 bg-cover bg-right" style={{ backgroundImage: "url(/eco/shelter.jpg)" }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-navy/97 via-navy/90 to-navy/55" />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-navy/30" />
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="animate-aurora absolute -left-24 -top-36 h-[30rem] w-[30rem] rounded-full blur-[120px] opacity-70" style={{ background: "radial-gradient(circle, var(--brand-light), transparent 65%)" }} />
-        </div>
-        <div className="bg-dots-hero absolute inset-0 opacity-40" />
+        <HeroBackdrop />
         <div className="relative mx-auto flex max-w-7xl flex-col gap-6 px-4 py-11 animate-rise sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <Greeting nombre={identidad.firstName || identidad.nombre} fecha={fecha} />
           <HeroSummary perfilPct={identidad.pct} tareasPendientes={pendientes} eventosCount={eventos.length} />

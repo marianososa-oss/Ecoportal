@@ -41,7 +41,7 @@ export default async function AutogestionPage() {
             {esRRHH && <AprobacionRRHH pendientes={pendientes} />}
           </div>
 
-          <section className="eco-sheen rounded-2xl border border-line bg-card p-6 shadow-card">
+          <section className="eco-card p-6">
             <h2 className="font-bold text-heading">Mis solicitudes</h2>
             {mias.length === 0 ? (
               <div className="mt-4 flex flex-col items-center gap-1.5 rounded-xl border border-dashed border-line bg-surface/40 py-10 text-center">

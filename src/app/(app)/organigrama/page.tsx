@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
-import { Network, ArrowUpRight, Info } from "lucide-react";
+import { ArrowUpRight, Info } from "lucide-react";
+import { PageHero } from "@/components/shell/PageHero";
 import { getCurrentUser } from "@/lib/user";
 
 export const metadata = { title: "Organigrama" };
@@ -13,41 +14,37 @@ export default async function OrganigramaPage() {
   if (!user) redirect("/login");
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2.5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand/10 text-brand">
-            <Network size={18} />
-          </span>
-          <div>
-            <h1 className="text-xl font-extrabold tracking-tight text-heading">Organigrama y perfiles</h1>
-            <p className="text-xs text-muted">Estructura de Ecocontrol y fichas de puesto por área.</p>
-          </div>
-        </div>
+    <>
+      <PageHero
+        eyebrow="Equipo"
+        title="Organigrama y perfiles"
+        subtitle="La estructura de Ecocontrol y las fichas de puesto de cada área."
+      >
         <a
           href={ORGANIGRAMA_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-line bg-card px-4 py-2.5 text-sm font-semibold text-brand shadow-card transition hover:bg-surface"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-brand transition hover:bg-white/90"
         >
-          Pantalla completa <ArrowUpRight size={15} />
+          Abrir en pantalla completa <ArrowUpRight size={15} />
         </a>
-      </div>
+      </PageHero>
 
-      {/* Vista embebida */}
-      <div className="mt-5 overflow-hidden rounded-2xl border border-line bg-card shadow-card">
-        <iframe
-          src={ORGANIGRAMA_URL}
-          title="Organigrama de Ecocontrol"
-          className="h-[calc(100dvh-13rem)] min-h-[520px] w-full"
-        />
-      </div>
+      <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
+        <div className="eco-sheen overflow-hidden eco-card">
+          <iframe
+            src={ORGANIGRAMA_URL}
+            title="Organigrama de Ecocontrol"
+            className="h-[calc(100dvh-16rem)] min-h-[520px] w-full"
+          />
+        </div>
 
-      <p className="mt-3 flex items-start gap-1.5 text-xs text-muted">
-        <Info size={14} className="mt-0.5 shrink-0 text-brand" />
-        Si el organigrama no carga acá adentro, tu navegador puede estar pidiendo permiso de Google:
-        abrilo con el botón <strong>“Pantalla completa”</strong> y va a andar igual.
-      </p>
-    </div>
+        <p className="mt-3 flex items-start gap-1.5 text-xs text-muted">
+          <Info size={14} className="mt-0.5 shrink-0 text-brand" />
+          Si el organigrama no carga acá adentro, tu navegador puede estar pidiendo
+          permiso de Google: abrilo con el botón <strong>“Abrir en pantalla completa”</strong>.
+        </p>
+      </div>
+    </>
   );
 }

@@ -31,7 +31,7 @@ export function SolicitudForm() {
   };
 
   return (
-    <section className="eco-sheen rounded-2xl border border-line bg-card p-6 shadow-card">
+    <section className="eco-card p-6">
       <h2 className="font-bold text-heading">Nueva solicitud</h2>
       <p className="mt-1 text-sm text-muted">Pedí vacaciones, una licencia o lo que necesites. RRHH la revisa.</p>
 

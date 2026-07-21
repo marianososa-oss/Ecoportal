@@ -32,7 +32,7 @@ export function AprobacionRRHH({ pendientes }: { pendientes: RequestConSolicitan
     });
 
   return (
-    <section className="eco-sheen rounded-2xl border border-line bg-card p-6 shadow-card">
+    <section className="eco-card p-6">
       <div className="flex items-center gap-2">
         <Inbox size={16} className="text-brand" />
         <h2 className="font-bold text-heading">Pendientes de aprobar</h2>

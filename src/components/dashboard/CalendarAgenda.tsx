@@ -40,7 +40,7 @@ export function CalendarAgenda({ eventos }: { eventos: CalEvent[] }) {
   }
 
   return (
-    <div className="eco-sheen rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift md:p-6">
+    <div className="eco-card eco-card-hover p-5 md:p-6">
       <div className="grid gap-6 sm:grid-cols-[auto_1fr]">
         {/* Mini calendario */}
         <div className="sm:w-64">

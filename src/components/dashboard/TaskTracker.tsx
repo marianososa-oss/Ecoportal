@@ -60,7 +60,7 @@ export function TaskTracker({ tareas }: { tareas: TareaView[] }) {
   };
 
   return (
-    <section className="eco-sheen rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:shadow-lift">
+    <section className="eco-card eco-card-hover p-5">
       <div className="flex items-center justify-between">
         <h2 className="font-bold text-heading">Tareas</h2>
         <button

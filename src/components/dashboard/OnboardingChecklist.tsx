@@ -27,7 +27,7 @@ export function OnboardingChecklist({
   const pct = Math.round((hechos / pasos.length) * 100);
 
   return (
-    <section className="rounded-2xl border border-line bg-card p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
+    <section className="eco-card eco-card-hover p-5">
       <div className="flex items-center justify-between">
         <h2 className="font-bold text-heading">Tu inducción</h2>
         <span className="text-xs font-bold text-brand-accent-dark">{hechos}/{pasos.length}</span>

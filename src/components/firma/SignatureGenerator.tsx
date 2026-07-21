@@ -108,7 +108,7 @@ export function SignatureGenerator({
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr] lg:items-start">
       {/* Formulario */}
-      <div className="rounded-2xl border border-line bg-card p-6 shadow-card sm:p-7">
+      <div className="eco-card p-6 sm:p-7">
         <h2 className="text-lg font-bold text-heading">Tus datos</h2>
         <p className="mt-1 text-sm text-muted">
           Completá tus datos. Lo demás (logo, dirección, teléfono general,
@@ -144,7 +144,7 @@ export function SignatureGenerator({
       </div>
 
       {/* Preview */}
-      <div className="rounded-2xl border border-line bg-card p-4 shadow-card sm:p-6">
+      <div className="eco-card p-4 sm:p-6">
         <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">
           Vista previa
         </p>

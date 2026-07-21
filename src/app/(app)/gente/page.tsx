@@ -73,7 +73,7 @@ export default async function GentePage() {
 
         {/* Cumpleaños del mes */}
         {cumples.length > 0 && (
-          <section className="mb-8 rounded-2xl border border-line bg-card p-5 shadow-card">
+          <section className="mb-8 eco-card p-5">
             <h2 className="flex items-center gap-2 font-bold text-heading">
               <Cake size={16} className="text-brand-accent" /> Cumpleaños de {MESES[now.getMonth()]}
             </h2>

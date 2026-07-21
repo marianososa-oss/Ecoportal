@@ -70,7 +70,7 @@ export function Directorio({ personas }: { personas: Persona[] }) {
                 {ps.map((p) => (
                   <div
                     key={p.id}
-                    className="flex items-center gap-3 rounded-2xl border border-line bg-card p-4 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift"
+                    className="flex items-center gap-3 eco-card eco-card-hover p-4"
                   >
                     {p.avatarUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element

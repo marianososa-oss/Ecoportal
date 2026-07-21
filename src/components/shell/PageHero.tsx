@@ -1,7 +1,29 @@
 /**
- * Hero navy con foto institucional + velo + glows tipo aurora + textura de
- * puntos. Mismo lenguaje visual que el hero de econoticias.
+ * Hero navy compartido por TODAS las pantallas del portal.
+ * `HeroBackdrop` es el fondo (foto + velo + aurora + puntos) para que el hero
+ * de "Mi día" y el de las demás páginas sean exactamente el mismo lenguaje.
  */
+export function HeroBackdrop({ image = "/eco/shelter.jpg" }: { image?: string }) {
+  return (
+    <>
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-cover bg-right"
+        style={{ backgroundImage: `url(${image})` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-navy/97 via-navy/90 to-navy/55" />
+      <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-navy/30" />
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div
+          className="animate-aurora absolute -left-24 -top-36 h-[30rem] w-[30rem] rounded-full opacity-70 blur-[120px]"
+          style={{ background: "radial-gradient(circle, var(--brand-light), transparent 65%)" }}
+        />
+      </div>
+      <div className="bg-dots-hero absolute inset-0 opacity-40" />
+    </>
+  );
+}
+
 export function PageHero({
   eyebrow,
   title,
@@ -19,24 +41,7 @@ export function PageHero({
 }) {
   return (
     <section className="relative isolate overflow-hidden bg-navy">
-      {/* Foto de fondo */}
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-cover bg-right"
-        style={{ backgroundImage: `url(${image})` }}
-      />
-      {/* Velo: oscuro a la izquierda (texto), deja ver la foto a la derecha */}
-      <div className="absolute inset-0 bg-gradient-to-r from-navy/97 via-navy/90 to-navy/55" />
-      <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-navy/30" />
-
-      {/* Glow de acento (sutil, la foto ya da textura) */}
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div
-          className="animate-aurora absolute -left-24 -top-36 h-[30rem] w-[30rem] rounded-full blur-[120px] opacity-70"
-          style={{ background: "radial-gradient(circle, var(--brand-light), transparent 65%)" }}
-        />
-      </div>
-      <div className="bg-dots-hero absolute inset-0 opacity-40" />
+      <HeroBackdrop image={image} />
 
       <div
         className={`relative mx-auto max-w-6xl px-5 sm:px-8 ${

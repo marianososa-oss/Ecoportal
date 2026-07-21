@@ -42,7 +42,7 @@ export function Reconocimientos({
   };
 
   return (
-    <section className="mb-8 eco-sheen rounded-2xl border border-line bg-card p-6 shadow-card">
+    <section className="mb-8 eco-card p-6">
       <div className="flex items-center justify-between">
         <h2 className="flex items-center gap-2 font-bold text-heading">
           <Heart size={16} className="text-brand-accent" /> Reconocimientos

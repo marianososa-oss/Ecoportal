@@ -11,7 +11,7 @@ const ACCESOS = [
 
 export function QuickAccess() {
   return (
-    <section className="eco-sheen rounded-2xl border border-line bg-card p-5 shadow-card">
+    <section className="eco-card p-5">
       <h2 className="font-bold text-heading">Accesos rápidos</h2>
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {ACCESOS.map((a) => {
