@@ -13,7 +13,7 @@ export function LiveStats({
   const pctTareas = tareasTotal ? Math.round((tareasCompletas / tareasTotal) * 100) : 0;
 
   return (
-    <div className="grid grid-cols-2 gap-5">
+    <div className="grid grid-cols-2 gap-3 sm:gap-5">
       <Stat icon={<CheckCircle2 size={16} />} titulo="Tareas completas" valor={`${tareasCompletas}/${tareasTotal}`} pct={pctTareas} tone="var(--eco-aire)" />
       <Stat icon={<UserCircle size={16} />} titulo="Perfil completo" valor={`${perfilPct}%`} pct={perfilPct} tone="var(--eco-humedad)" />
     </div>
@@ -22,15 +22,15 @@ export function LiveStats({
 
 function Stat({ icon, titulo, valor, pct, tone }: { icon: React.ReactNode; titulo: string; valor: string; pct: number; tone: string }) {
   return (
-    <div className="eco-tile eco-card eco-card-hover p-4" style={{ ["--tone" as string]: tone }}>
-      <div className="flex items-center gap-2 text-muted">
+    <div className="eco-tile eco-card eco-card-hover min-w-0 p-4" style={{ ["--tone" as string]: tone }}>
+      <div className="flex min-w-0 items-center gap-2 text-muted">
         <span
-          className="flex h-7 w-7 items-center justify-center rounded-lg"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
           style={{ color: "var(--tone)", background: "color-mix(in srgb, var(--tone) 14%, transparent)" }}
         >
           {icon}
         </span>
-        <span className="text-xs font-semibold">{titulo}</span>
+        <span className="truncate text-xs font-semibold">{titulo}</span>
       </div>
       <p className="mt-3 text-2xl font-extrabold text-heading">{valor}</p>
       <div className="mt-2 flex items-center gap-2">

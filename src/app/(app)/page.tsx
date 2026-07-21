@@ -50,10 +50,10 @@ export default async function MiDia() {
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid gap-5 lg:grid-cols-3">
-          <div className="space-y-5 lg:col-span-2">
+          <div className="min-w-0 space-y-5 lg:col-span-2">
             <div className="grid gap-5 md:grid-cols-5">
-              <Reveal delay={40} className="md:col-span-2"><IdentityCard user={identidad} /></Reveal>
-              <div className="space-y-5 md:col-span-3">
+              <Reveal delay={40} className="min-w-0 md:col-span-2"><IdentityCard user={identidad} /></Reveal>
+              <div className="min-w-0 space-y-5 md:col-span-3">
                 <Reveal delay={90}>
                   <LiveStats perfilPct={identidad.pct} tareasTotal={tareas.length} tareasCompletas={completas} />
                 </Reveal>
@@ -67,7 +67,7 @@ export default async function MiDia() {
             <Reveal delay={260}><CalendarAgenda eventos={calEvents} /></Reveal>
           </div>
 
-          <div className="space-y-5">
+          <div className="min-w-0 space-y-5">
             <Reveal delay={120}><TaskTracker tareas={tareas} /></Reveal>
             <Reveal delay={220}><UpcomingEvents eventos={eventos} /></Reveal>
           </div>
