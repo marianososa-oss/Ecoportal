@@ -35,7 +35,7 @@ const NAV: Item[] = [
   { href: "/autogestion", label: "Autogestión", icon: ClipboardCheck },
   { href: "/perfil", label: "Imagen de perfil", icon: ImageIcon },
   { href: "/firma", label: "Firma de mail", icon: PenLine },
-  { href: "/tour", label: "Tour guiado", icon: Compass, soon: true },
+  { href: "/tour", label: "Tour guiado", icon: Compass },
 ];
 
 function isActive(pathname: string, href: string) {

@@ -58,7 +58,7 @@ export default async function MiDia() {
                   <LiveStats perfilPct={identidad.pct} tareasTotal={tareas.length} tareasCompletas={completas} />
                 </Reveal>
                 <Reveal delay={150}>
-                  <OnboardingChecklist perfilDone={identidad.pct === 100} />
+                  <OnboardingChecklist perfilDone={identidad.pct === 100} tourDone={user.tourDone} />
                 </Reveal>
               </div>
             </div>

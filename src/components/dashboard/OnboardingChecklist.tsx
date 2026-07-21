@@ -13,13 +13,16 @@ type Paso = {
  */
 export function OnboardingChecklist({
   perfilDone,
+  tourDone = false,
 }: {
   perfilDone: boolean;
+  tourDone?: boolean;
 }) {
   const pasos: Paso[] = [
     { titulo: "Ingresaste con tu cuenta de Ecocontrol", done: true },
     { titulo: "Conectaste tu Google Calendar", done: true },
     { titulo: "Completá tu perfil (nombre y área)", done: perfilDone },
+    { titulo: "Hacé el tour guiado", done: tourDone, href: "/tour" },
     { titulo: "Creá tu imagen de perfil", done: false, href: "/perfil" },
     { titulo: "Armá tu firma de mail", done: false, href: "/firma" },
   ];
