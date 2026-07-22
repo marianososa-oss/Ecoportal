@@ -2,13 +2,19 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, User, X, Check } from "lucide-react";
+import { Pencil, User, X, Check, Mail, Phone, Cake } from "lucide-react";
 import { ProgressRing } from "./Progress";
 import { updateProfileAction } from "@/lib/actions/perfil";
 import type { Identidad } from "@/lib/identidad";
 
 function iniciales(nombre: string) {
   return nombre.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
+}
+
+/** "MM-DD" → "DD/MM" para mostrar el cumpleaños. */
+function fmtCumple(mmdd: string) {
+  const [mm, dd] = mmdd.split("-");
+  return mm && dd ? `${dd}/${mm}` : "";
 }
 
 export function IdentityCard({ user }: { user: Identidad }) {
@@ -52,7 +58,26 @@ export function IdentityCard({ user }: { user: Identidad }) {
         {user.pct === 100 ? "Editar mi perfil" : "Completá tu perfil"}
       </button>
 
+      <div className="mt-4 space-y-2 border-t border-white/10 pt-4">
+        <InfoRow icon={<Mail size={13} />} value={user.email} title={user.email} />
+        {user.phone.trim() && <InfoRow icon={<Phone size={13} />} value={user.phone} />}
+        {fmtCumple(user.birthday) && (
+          <InfoRow icon={<Cake size={13} />} value={`Cumple ${fmtCumple(user.birthday)}`} />
+        )}
+      </div>
+
       {open && <EditModal user={user} onClose={() => setOpen(false)} />}
+    </div>
+  );
+}
+
+function InfoRow({ icon, value, title }: { icon: React.ReactNode; value: string; title?: string }) {
+  return (
+    <div className="flex items-center gap-2.5 text-white/80" title={title}>
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-white/10 text-white/70">
+        {icon}
+      </span>
+      <span className="min-w-0 flex-1 truncate text-xs">{value}</span>
     </div>
   );
 }

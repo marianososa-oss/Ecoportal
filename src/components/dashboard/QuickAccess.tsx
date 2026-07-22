@@ -1,8 +1,33 @@
 import { Gauge, GraduationCap, Network, Mail, CalendarDays, FolderOpen, ArrowUpRight } from "lucide-react";
 
+/** URL del Odoo de Ecocontrol. */
+const ODOO_URL = "https://ecocontrol-staging.coodesoft.com.ar";
+
+/** Logotipo de Odoo (wordmark) dibujado con currentColor, para el tile de acceso. */
+function OdooMark({ size = 17, className = "" }: { size?: number; className?: string }) {
+  return (
+    <svg
+      height={Math.round(size * 0.72)}
+      viewBox="0 0 119 39"
+      fill="none"
+      className={className}
+      role="img"
+      aria-label="Odoo"
+    >
+      <circle cx="16" cy="24" r="10.5" stroke="currentColor" strokeWidth="7" />
+      <circle cx="45" cy="24" r="10.5" stroke="currentColor" strokeWidth="7" />
+      <rect x="52" y="4" width="7" height="34" rx="3.5" fill="currentColor" />
+      <circle cx="74" cy="24" r="10.5" stroke="currentColor" strokeWidth="7" />
+      <circle cx="103" cy="24" r="10.5" stroke="currentColor" strokeWidth="7" />
+    </svg>
+  );
+}
+
 /* Cada acceso toma un color de la paleta de servicios de Ecocontrol,
-   la misma franja que aparece en la placa y en el banner del mail. */
+   la misma franja que aparece en la placa y en el banner del mail.
+   Odoo usa su propio violeta de marca. */
 const ACCESOS = [
+  { label: "Odoo", desc: "Gestión · ERP", href: ODOO_URL, icon: OdooMark, tone: "#9c4a8b" },
   { label: "EcoMonitor", desc: "Monitoreo HVAC", href: "https://eco-monitor-zeta.vercel.app", icon: Gauge, tone: "var(--eco-humedad)" },
   { label: "Capacitaciones", desc: "Cursos internos", href: "https://ecocontrol-capacitaciones.vercel.app", icon: GraduationCap, tone: "var(--eco-aire)" },
   { label: "Organigrama", desc: "Estructura", href: "https://script.google.com/a/macros/ecocontrol.com.ar/s/AKfycbxMuzaZYNhfaPqTEedHPN7ht1L23k4hmhu8uTD_WDYiE-dbPzhJjaqqEp97eUqlszMo/exec", icon: Network, tone: "var(--eco-renovables)" },
@@ -15,7 +40,7 @@ export function QuickAccess() {
   return (
     <section className="eco-card p-5">
       <h2 className="font-bold text-heading">Accesos rápidos</h2>
-      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
         {ACCESOS.map((a) => {
           const Icon = a.icon;
           return (

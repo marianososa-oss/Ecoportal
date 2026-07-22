@@ -2,17 +2,18 @@ import { redirect } from "next/navigation";
 import { IdentityCard } from "@/components/dashboard/IdentityCard";
 import { Greeting } from "@/components/dashboard/Greeting";
 import { HeroSummary } from "@/components/dashboard/HeroSummary";
-import { LiveStats } from "@/components/dashboard/LiveStats";
 import { TaskTracker } from "@/components/dashboard/TaskTracker";
 import { UpcomingEvents } from "@/components/dashboard/UpcomingEvents";
 import { CalendarAgenda } from "@/components/dashboard/CalendarAgenda";
 import { OnboardingChecklist } from "@/components/dashboard/OnboardingChecklist";
 import { QuickAccess } from "@/components/dashboard/QuickAccess";
+import { TeamPulse } from "@/components/dashboard/TeamPulse";
 import { HeroBackdrop } from "@/components/shell/PageHero";
 import { getCurrentUser } from "@/lib/user";
 import { toIdentidad } from "@/lib/identidad";
 import { getUpcomingCalendarEvents } from "@/lib/google";
-import { getTasks, getEvents } from "@/db/queries";
+import { getTasks, getEvents, getWorklogsByWeek, getSuggestions } from "@/db/queries";
+import { isoWeekKey } from "@/lib/week";
 
 export const metadata = { title: "Mi día" };
 export const dynamic = "force-dynamic";
@@ -24,16 +25,19 @@ export default async function MiDia() {
   if (!user) redirect("/login");
   const identidad = toIdentidad(user);
 
-  const [tasks, events, calEvents] = await Promise.all([
+  const [tasks, events, calEvents, worklogs, sugerencias] = await Promise.all([
     getTasks(user.id),
     getEvents(user.id),
     user.googleRefreshToken ? getUpcomingCalendarEvents(user.googleRefreshToken) : Promise.resolve([]),
+    getWorklogsByWeek(isoWeekKey()),
+    getSuggestions(user.id),
   ]);
 
   const tareas = tasks.map((t) => ({ id: t.id, titulo: t.titulo, cuando: t.cuando, estado: t.estado as "pendiente" | "completa" }));
   const eventos = events.map((e) => ({ id: e.id, titulo: e.titulo, cuando: e.cuando, tipo: e.tipo }));
   const pendientes = tareas.filter((t) => t.estado !== "completa").length;
-  const completas = tareas.filter((t) => t.estado === "completa").length;
+  const enObra = worklogs.filter((w) => w.tipo === "obra");
+  const topIdea = sugerencias[0] ?? null;
 
   const now = new Date();
   const fecha = `${now.getDate()} de ${MESES[now.getMonth()]} de ${now.getFullYear()}`;
@@ -53,14 +57,9 @@ export default async function MiDia() {
           <div className="min-w-0 space-y-5 lg:col-span-2">
             <div className="grid gap-5 md:grid-cols-5">
               <Reveal delay={40} className="min-w-0 md:col-span-2"><IdentityCard user={identidad} /></Reveal>
-              <div className="min-w-0 space-y-5 md:col-span-3">
-                <Reveal delay={90}>
-                  <LiveStats perfilPct={identidad.pct} tareasTotal={tareas.length} tareasCompletas={completas} />
-                </Reveal>
-                <Reveal delay={150}>
-                  <OnboardingChecklist perfilDone={identidad.pct === 100} tourDone={user.tourDone} />
-                </Reveal>
-              </div>
+              <Reveal delay={90} className="min-w-0 md:col-span-3">
+                <OnboardingChecklist perfilDone={identidad.pct === 100} tourDone={user.tourDone} />
+              </Reveal>
             </div>
 
             <Reveal delay={210}><QuickAccess /></Reveal>
@@ -69,7 +68,8 @@ export default async function MiDia() {
 
           <div className="min-w-0 space-y-5">
             <Reveal delay={120}><TaskTracker tareas={tareas} /></Reveal>
-            <Reveal delay={220}><UpcomingEvents eventos={eventos} /></Reveal>
+            <Reveal delay={200}><TeamPulse enObra={enObra} topIdea={topIdea} /></Reveal>
+            <Reveal delay={260}><UpcomingEvents eventos={eventos} /></Reveal>
           </div>
         </div>
       </div>

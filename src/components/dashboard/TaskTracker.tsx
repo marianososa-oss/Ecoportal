@@ -172,14 +172,26 @@ export function TaskTracker({ tareas }: { tareas: TareaView[] }) {
           );
         })}
         {visibles.length === 0 && (
-          <li className="flex flex-col items-center gap-1.5 px-2 py-8 text-center">
-            <ListTodo size={22} className="text-line" />
+          <li className="flex flex-col items-center gap-2 px-2 py-8 text-center">
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-surface text-brand">
+              <ListTodo size={20} />
+            </span>
             <p className="text-sm font-semibold text-heading">
               {tab === "completa" ? "Nada completado aún" : "Sin tareas por ahora"}
             </p>
-            <p className="text-xs text-muted">
-              {tab === "completa" ? "Cuando marques una, aparece acá." : "Tocá “+ Nueva” para agregar tu primera."}
+            <p className="max-w-[15rem] text-xs text-muted">
+              {tab === "completa"
+                ? "Cuando marques una tarea, aparece acá."
+                : "Anotá lo que tengas que hacer y no se te escapa nada."}
             </p>
+            {tab !== "completa" && (
+              <button
+                onClick={() => setCreando(true)}
+                className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-brand/30 px-3.5 py-1.5 text-xs font-bold text-brand transition hover:bg-brand hover:text-white"
+              >
+                <Plus size={13} /> Agregar tarea
+              </button>
+            )}
           </li>
         )}
       </ul>

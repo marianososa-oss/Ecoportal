@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { Clock, CheckCircle2, XCircle, FileText } from "lucide-react";
+import { Clock, CheckCircle2, XCircle, FileText, Send, UserCheck, BellRing } from "lucide-react";
 import { PageHero } from "@/components/shell/PageHero";
 import { SolicitudForm } from "@/components/autogestion/SolicitudForm";
 import { AprobacionRRHH } from "@/components/autogestion/AprobacionRRHH";
@@ -39,6 +39,7 @@ export default async function AutogestionPage() {
           <div className="space-y-6">
             <SolicitudForm />
             {esRRHH && <AprobacionRRHH pendientes={pendientes} />}
+            <ComoSigue />
           </div>
 
           <section className="eco-card p-6">
@@ -60,6 +61,36 @@ export default async function AutogestionPage() {
         </div>
       </div>
     </>
+  );
+}
+
+const PASOS = [
+  { Icon: Send, titulo: "Enviás tu pedido", desc: "Elegís el tipo y las fechas. Queda registrado al instante." },
+  { Icon: UserCheck, titulo: "RRHH lo revisa", desc: "Recibe la solicitud y la aprueba o la rechaza." },
+  { Icon: BellRing, titulo: "Te avisamos acá", desc: "Ves el estado en “Mis solicitudes”, sin mails de ida y vuelta." },
+];
+
+function ComoSigue() {
+  return (
+    <section className="eco-card p-6">
+      <h2 className="font-bold text-heading">Cómo sigue tu pedido</h2>
+      <ol className="mt-4 space-y-3">
+        {PASOS.map(({ Icon, titulo, desc }, i) => (
+          <li key={titulo} className="flex gap-3">
+            <div className="flex flex-col items-center">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
+                <Icon size={16} />
+              </span>
+              {i < PASOS.length - 1 && <span className="mt-1 w-px flex-1 bg-line" />}
+            </div>
+            <div className="pb-1">
+              <p className="text-sm font-bold text-heading">{titulo}</p>
+              <p className="mt-0.5 text-xs text-muted">{desc}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
 

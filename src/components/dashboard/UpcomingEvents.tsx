@@ -119,10 +119,18 @@ export function UpcomingEvents({ eventos }: { eventos: EventoView[] }) {
           </li>
         ))}
         {eventos.length === 0 && (
-          <li className="flex flex-col items-center gap-1.5 px-2 py-8 text-center">
-            <CalendarClock size={22} className="text-line" />
+          <li className="flex flex-col items-center gap-2 px-2 py-8 text-center">
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-surface text-brand">
+              <CalendarClock size={20} />
+            </span>
             <p className="text-sm font-semibold text-heading">Sin eventos por ahora</p>
-            <p className="text-xs text-muted">Cargá capacitaciones, cumpleaños o reuniones de tu área.</p>
+            <p className="max-w-[16rem] text-xs text-muted">Sumá capacitaciones, cumpleaños o reuniones de tu área.</p>
+            <button
+              onClick={() => setCreando(true)}
+              className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-brand/30 px-3.5 py-1.5 text-xs font-bold text-brand transition hover:bg-brand hover:text-white"
+            >
+              <Plus size={13} /> Agregar evento
+            </button>
           </li>
         )}
       </ul>

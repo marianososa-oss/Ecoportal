@@ -11,15 +11,15 @@ export function HeroBackdrop({ image = "/eco/shelter.jpg" }: { image?: string })
         className="absolute inset-0 bg-cover bg-right"
         style={{ backgroundImage: `url(${image})` }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-navy/97 via-navy/90 to-navy/55" />
-      <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-navy/30" />
+      <div className="absolute inset-0 bg-gradient-to-r from-navy/96 via-navy/82 to-navy/35" />
+      <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-navy/20" />
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div
           className="animate-aurora absolute -left-24 -top-36 h-[30rem] w-[30rem] rounded-full opacity-70 blur-[120px]"
           style={{ background: "radial-gradient(circle, var(--brand-light), transparent 65%)" }}
         />
       </div>
-      <div className="bg-dots-hero absolute inset-0 opacity-40" />
+      <div className="bg-dots-hero absolute inset-0 opacity-25" />
       <EcoStrip />
     </>
   );

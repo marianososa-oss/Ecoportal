@@ -6,6 +6,7 @@ import {
   timestamp,
   boolean,
   index,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -118,8 +119,70 @@ export const kudos = pgTable(
   (t) => [index("kudos_to_idx").on(t.toUserId)],
 );
 
+/**
+ * Sugerencias de mejora (del portal, de un proceso, de un lugar…). Pueden ser
+ * anónimas: en ese caso `userId` queda en null y no se muestra el autor.
+ */
+export const suggestions = pgTable(
+  "suggestions",
+  {
+    id: serial("id").primaryKey(),
+    /** autor; null si se envió de forma anónima. */
+    userId: integer("user_id").references(() => users.id, { onDelete: "set null" }),
+    anonimo: boolean("anonimo").default(false).notNull(),
+    /** "sistema" | "proceso" | "lugar" | "otro" */
+    categoria: text("categoria").default("otro").notNull(),
+    texto: text("texto").notNull(),
+    /** "nueva" | "en_revision" | "hecha" | "descartada" */
+    estado: text("estado").default("nueva").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [index("suggestions_estado_idx").on(t.estado)],
+);
+
+/** Apoyos (+1) a una sugerencia. Uno por persona por sugerencia. */
+export const suggestionVotes = pgTable(
+  "suggestion_votes",
+  {
+    id: serial("id").primaryKey(),
+    suggestionId: integer("suggestion_id")
+      .notNull()
+      .references(() => suggestions.id, { onDelete: "cascade" }),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [uniqueIndex("suggestion_votes_unique").on(t.suggestionId, t.userId)],
+);
+
+/**
+ * Foco semanal: en qué está trabajando cada persona esta semana. Una entrada
+ * editable por persona y por semana (clave `semana` en formato ISO "2026-W30").
+ */
+export const worklogs = pgTable(
+  "worklogs",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    semana: text("semana").notNull(),
+    /** "obra" | "desarrollo" | "oficina" | "otro" */
+    tipo: text("tipo").default("oficina").notNull(),
+    titulo: text("titulo").notNull(),
+    /** dónde (sobre todo cuando el tipo es "obra"). */
+    lugar: text("lugar").default("").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [uniqueIndex("worklogs_user_week").on(t.userId, t.semana)],
+);
+
 export type User = typeof users.$inferSelect;
 export type Task = typeof tasks.$inferSelect;
 export type Event = typeof events.$inferSelect;
 export type Request = typeof requests.$inferSelect;
 export type Kudo = typeof kudos.$inferSelect;
+export type Suggestion = typeof suggestions.$inferSelect;
+export type Worklog = typeof worklogs.$inferSelect;
